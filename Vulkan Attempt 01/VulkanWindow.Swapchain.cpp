@@ -3,6 +3,8 @@
 using namespace com::gelunox::vulcanUtils;
 using namespace std;
 
+//https://vulkan-tutorial.com/Drawing_a_triangle/Presentation/Swap_chain
+
 void VulkanWindow::buildSwapchain()
 {
 	VkSurfaceCapabilitiesKHR capabilities = getSurfaceCapabilities();
@@ -11,7 +13,7 @@ void VulkanWindow::buildSwapchain()
 	VkSurfaceFormatKHR surfaceFormat = getSurfaceFormat();
 	swapchainImageFormat = surfaceFormat.format;
 
-	unsigned int imageCount = capabilities.minImageCount + 1;
+	uint32_t imageCount = capabilities.minImageCount + 1;
 
 	if (capabilities.maxImageCount > 0 && imageCount > capabilities.maxImageCount)
 	{
@@ -48,7 +50,7 @@ void VulkanWindow::buildImages()
 {
 	swapchainImageViews.resize( swapchainImages.size() );
 
-	for (unsigned int i = 0; i < swapchainImages.size(); i++)
+	for (uint32_t i = 0; i < swapchainImages.size(); i++)
 	{
 		VkImageViewCreateInfo createInfo = {};
 		createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;

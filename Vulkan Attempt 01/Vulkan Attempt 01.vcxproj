@@ -120,12 +120,17 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="VulkanWindow.cpp" />
-    <ClCompile Include="Window.DeviceSelection.cpp" />
-    <ClCompile Include="Window.GraphicsPipeline.cpp" />
-    <ClCompile Include="Window.Swapchain.cpp" />
+    <ClCompile Include="VulkanWindow.DeviceSelection.cpp" />
+    <ClCompile Include="VulkanWindow.GraphicsPipeline.cpp" />
+    <ClCompile Include="VulkanWindow.Swapchain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="util.hpp" />
     <ClInclude Include="VulkanWindow.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\shader.frag" />
+    <None Include="shaders\shader.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

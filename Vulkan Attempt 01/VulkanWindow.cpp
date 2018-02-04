@@ -26,6 +26,7 @@ bool VulkanWindow::isSuitableGpu( VkPhysicalDevice device )
 		&& deviceFeatures.geometryShader;
 }
 
+//https://vulkan-tutorial.com/Drawing_a_triangle/Setup/Instance
 VulkanWindow::VulkanWindow()
 {
 	//GLFW init
@@ -35,7 +36,7 @@ VulkanWindow::VulkanWindow()
 	glfwWindowHint( GLFW_RESIZABLE, GLFW_FALSE );
 	window = glfwCreateWindow( 500, 500, "Vulkan window", nullptr, nullptr );
 
-	unsigned int glfwExtensionCount = 0;
+	uint32_t glfwExtensionCount = 0;
 	const char** glfwExtensions;
 	glfwExtensions = glfwGetRequiredInstanceExtensions( &glfwExtensionCount );
 
@@ -69,6 +70,7 @@ VulkanWindow::VulkanWindow()
 	selectPhysicalDevice();
 	createLogicalDevice();
 	buildSwapchain();
+	buildImages();
 }
 
 VulkanWindow::~VulkanWindow()
@@ -93,10 +95,11 @@ void VulkanWindow::run()
 	}
 }
 
+//https://vulkan-tutorial.com/Drawing_a_triangle/Setup/Physical_devices_and_queue_families
 //retrieve graphics query and presentation query
 void VulkanWindow::findQFamilyIndexes()
 {
-	unsigned int queueFamilyCount = 0;
+	uint32_t queueFamilyCount = 0;
 	vkGetPhysicalDeviceQueueFamilyProperties( physicalDevice, &queueFamilyCount, nullptr );
 
 	vector<VkQueueFamilyProperties> queueFamilies( queueFamilyCount );
@@ -126,6 +129,8 @@ void VulkanWindow::findQFamilyIndexes()
 	}
 }
 
+//https://vulkan-tutorial.com/Drawing_a_triangle/Presentation/Window_surface
+
 VkSurfaceCapabilitiesKHR VulkanWindow::getSurfaceCapabilities()
 {
 	VkSurfaceCapabilitiesKHR capabilities;
@@ -137,7 +142,7 @@ VkSurfaceCapabilitiesKHR VulkanWindow::getSurfaceCapabilities()
 
 VkExtent2D VulkanWindow::getSwapExtent( VkSurfaceCapabilitiesKHR& capabilities )
 {
-	if (capabilities.currentExtent.width != numeric_limits<unsigned int>::max())
+	if (capabilities.currentExtent.width != numeric_limits<uint32_t>::max())
 	{
 		return capabilities.currentExtent;
 	}
@@ -151,7 +156,7 @@ VkExtent2D VulkanWindow::getSwapExtent( VkSurfaceCapabilitiesKHR& capabilities )
 
 VkSurfaceFormatKHR VulkanWindow::getSurfaceFormat()
 {
-	unsigned int formatCount;
+	uint32_t formatCount;
 	vector<VkSurfaceFormatKHR> formats;
 
 	vkGetPhysicalDeviceSurfaceFormatsKHR( physicalDevice, surface, &formatCount, nullptr );
@@ -180,7 +185,7 @@ VkSurfaceFormatKHR VulkanWindow::getSurfaceFormat()
 
 VkPresentModeKHR VulkanWindow::getPresentMode()
 {
-	unsigned int modeCount;
+	uint32_t modeCount;
 	vkGetPhysicalDeviceSurfacePresentModesKHR( physicalDevice, surface, &modeCount, nullptr );
 
 	vector<VkPresentModeKHR> modes;
@@ -206,4 +211,21 @@ VkPresentModeKHR VulkanWindow::getPresentMode()
 	}
 
 	return mode;
+}
+
+VkShaderModule VulkanWindow::createShaderModule( const vector<char>& code )
+{
+	VkShaderModuleCreateInfo createInfo = {};
+	createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
+	createInfo.codeSize = code.size();
+	createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
+
+	VkShaderModule shaderModule;
+
+	if (vkCreateShaderModule( device, &createInfo, nullptr, &shaderModule ) != VK_SUCCESS)
+	{
+		throw runtime_error( "Can't create shader module" );
+	}
+
+	return shaderModule;
 }

@@ -6,6 +6,8 @@
 #include <GLFW/glfw3.h>
 #include <vector>
 
+using namespace std;
+
 namespace com::gelunox::vulcanUtils
 {
 	class VulkanWindow
@@ -19,10 +21,13 @@ namespace com::gelunox::vulcanUtils
 		VkSurfaceKHR surface;
 
 		VkSwapchainKHR swapchain;
-		std::vector<VkImage> swapchainImages;
-		std::vector<VkImageView> swapchainImageViews;
+		vector<VkImage> swapchainImages;
+		vector<VkImageView> swapchainImageViews;
 		VkFormat swapchainImageFormat;
 		VkExtent2D swapchainExtent;
+
+		VkShaderModule vertShaderModule;
+		VkShaderModule fragShaderModule;
 
 		int graphicsQIndex = -1;
 		int presentationQIndex = -1;
@@ -49,5 +54,7 @@ namespace com::gelunox::vulcanUtils
 		VkExtent2D getSwapExtent( VkSurfaceCapabilitiesKHR& capabilities );
 		VkSurfaceFormatKHR getSurfaceFormat();
 		VkPresentModeKHR getPresentMode();
+
+		VkShaderModule createShaderModule( const vector<char>& code );
 	};
 }

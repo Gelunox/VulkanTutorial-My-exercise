@@ -4,9 +4,11 @@
 using namespace com::gelunox::vulcanUtils;
 using namespace std;
 
+//https://vulkan-tutorial.com/Drawing_a_triangle/Setup/Logical_device_and_queues
+
 void VulkanWindow::selectPhysicalDevice()
 {
-	unsigned int deviceCount = 0;
+	uint32_t deviceCount = 0;
 	vkEnumeratePhysicalDevices( instance, &deviceCount, nullptr );
 
 	if (deviceCount == 0)
