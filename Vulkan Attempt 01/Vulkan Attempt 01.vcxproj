@@ -119,11 +119,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Swapchain.cpp" />
     <ClCompile Include="VulkanWindow.cpp" />
+    <ClCompile Include="Window.DeviceSelection.cpp" />
+    <ClCompile Include="Window.GraphicsPipeline.cpp" />
+    <ClCompile Include="Window.Swapchain.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Swapchain.hpp" />
     <ClInclude Include="VulkanWindow.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

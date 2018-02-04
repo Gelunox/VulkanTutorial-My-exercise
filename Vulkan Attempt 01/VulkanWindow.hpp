@@ -39,9 +39,11 @@ namespace com::gelunox::vulcanUtils
 		void selectPhysicalDevice();
 		void createLogicalDevice();
 		void findQFamilyIndexes();
+
 		void buildSwapchain();
 		void buildImages();
 
+		void buildGraphicsPipeline();
 
 		VkSurfaceCapabilitiesKHR getSurfaceCapabilities();
 		VkExtent2D getSwapExtent( VkSurfaceCapabilitiesKHR& capabilities );
