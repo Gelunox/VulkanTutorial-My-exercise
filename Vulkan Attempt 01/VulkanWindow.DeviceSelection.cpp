@@ -50,6 +50,7 @@ void VulkanWindow::createLogicalDevice()
 {
 	//Logical device creation
 	float queuePriority = 1.0f;
+	vector<VkDeviceQueueCreateInfo> queueCreateInfos;
 
 	VkDeviceQueueCreateInfo graphicsQueueCreateInfo = {};
 	graphicsQueueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
@@ -57,15 +58,18 @@ void VulkanWindow::createLogicalDevice()
 	graphicsQueueCreateInfo.queueCount = 1;
 	graphicsQueueCreateInfo.pQueuePriorities = &queuePriority;
 
-	VkDeviceQueueCreateInfo presentationQueueCreateInfo = {};
-	graphicsQueueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-	graphicsQueueCreateInfo.queueFamilyIndex = presentationQIndex;
-	graphicsQueueCreateInfo.queueCount = 1;
-	graphicsQueueCreateInfo.pQueuePriorities = &queuePriority;
-
-	vector<VkDeviceQueueCreateInfo> queueCreateInfos;
 	queueCreateInfos.push_back( graphicsQueueCreateInfo );
-	queueCreateInfos.push_back( presentationQueueCreateInfo );
+
+	if (graphicsQIndex != presentationQIndex)
+	{
+		VkDeviceQueueCreateInfo presentationQueueCreateInfo = {};
+		presentationQueueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+		presentationQueueCreateInfo.queueFamilyIndex = presentationQIndex;
+		presentationQueueCreateInfo.queueCount = 1;
+		presentationQueueCreateInfo.pQueuePriorities = &queuePriority;
+
+		queueCreateInfos.push_back( presentationQueueCreateInfo );
+	}
 
 	//used device features
 	VkPhysicalDeviceFeatures deviceFeatures = {};
@@ -75,8 +79,17 @@ void VulkanWindow::createLogicalDevice()
 	deviceCreateInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
 	deviceCreateInfo.pQueueCreateInfos = queueCreateInfos.data();
 	deviceCreateInfo.pEnabledFeatures = &deviceFeatures;
-	deviceCreateInfo.enabledExtensionCount = 0;
-	deviceCreateInfo.enabledLayerCount = 0;
+	deviceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size());
+	deviceCreateInfo.ppEnabledExtensionNames = deviceExtensions.data();
+	if (enableValidationLayers)
+	{
+		deviceCreateInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
+		deviceCreateInfo.ppEnabledLayerNames = validationLayers.data();
+	}
+	else
+	{
+		deviceCreateInfo.enabledLayerCount = 0;
+	}
 
 	if (VK_SUCCESS != vkCreateDevice( physicalDevice, &deviceCreateInfo, nullptr, &logicalDevice ))
 	{

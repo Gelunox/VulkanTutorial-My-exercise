@@ -1,9 +1,12 @@
+#pragma once
 
+#include <vulkan/vulkan.h>
 #include <string>
 #include <vector>
 #include <fstream>
 
 using namespace std;
+
 
 namespace com::gelunox::vulcanUtils
 {
@@ -25,4 +28,5 @@ namespace com::gelunox::vulcanUtils
 
 		return buff;
 	}
+
 }

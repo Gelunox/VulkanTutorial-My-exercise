@@ -1,9 +1,9 @@
 #include "VulkanWindow.hpp"
+#include "util.hpp"
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 
-#include "util.hpp"
 
 #include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp>
@@ -67,8 +67,8 @@ void VulkanWindow::buildGraphicsPipeline()
 	vector<char> vertShader = readFile( "shaders/vert.spv" );
 	vector<char> fragShader = readFile( "shaders/frag.spv" );
 
-	vertShaderModule = createShaderModule( vertShader );
-	fragShaderModule = createShaderModule( fragShader );
+	VkShaderModule vertShaderModule = createShaderModule( vertShader );
+	VkShaderModule fragShaderModule = createShaderModule( fragShader );
 
 	VkPipelineShaderStageCreateInfo vertShStageInfo = {};
 	vertShStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -88,9 +88,7 @@ void VulkanWindow::buildGraphicsPipeline()
 	VkPipelineVertexInputStateCreateInfo vertexInputInfo = {};
 	vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 	vertexInputInfo.vertexBindingDescriptionCount = 0;
-	vertexInputInfo.pVertexBindingDescriptions = nullptr;
 	vertexInputInfo.vertexAttributeDescriptionCount = 0;
-	vertexInputInfo.pVertexAttributeDescriptions = nullptr;
 
 	//input assembly
 	VkPipelineInputAssemblyStateCreateInfo inputAssInfo = {};
@@ -107,7 +105,9 @@ void VulkanWindow::buildGraphicsPipeline()
 	viewport.minDepth = 0.0f;
 	viewport.maxDepth = 0.0f;
 
-	VkRect2D scissor = { {0, 0}, swapchainExtent };
+	VkRect2D scissor = {};
+	scissor.offset = { 0, 0 };
+	scissor.extent = swapchainExtent;
 
 	VkPipelineViewportStateCreateInfo viewportState = {};
 	viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
@@ -127,30 +127,30 @@ void VulkanWindow::buildGraphicsPipeline()
 	rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE;
 
 	rasterizer.depthBiasEnable = VK_FALSE;
-	rasterizer.depthBiasConstantFactor = 0.0f;
-	rasterizer.depthBiasClamp = 0.0f;
-	rasterizer.depthBiasSlopeFactor = 0.0f;
+	//rasterizer.depthBiasConstantFactor = 0.0f;
+	//rasterizer.depthBiasClamp = 0.0f;
+	//rasterizer.depthBiasSlopeFactor = 0.0f;
 
 	//multisampling
 	VkPipelineMultisampleStateCreateInfo multisampling = {};
 	multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
 	multisampling.sampleShadingEnable = VK_FALSE;
 	multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
-	multisampling.minSampleShading = 1.0f;
-	multisampling.pSampleMask = nullptr;
-	multisampling.alphaToCoverageEnable = VK_FALSE;
-	multisampling.alphaToOneEnable = VK_FALSE;
+	//multisampling.minSampleShading = 1.0f;
+	//multisampling.pSampleMask = nullptr;
+	//multisampling.alphaToCoverageEnable = VK_FALSE;
+	//multisampling.alphaToOneEnable = VK_FALSE;
 
 	//color blending
 	VkPipelineColorBlendAttachmentState colorblendAttachment = {};
 	colorblendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
 	colorblendAttachment.blendEnable = VK_FALSE;
-	colorblendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_ONE;
-	colorblendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ZERO;
-	colorblendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
-	colorblendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
-	colorblendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
-	colorblendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
+	//colorblendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_ONE;
+	//colorblendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ZERO;
+	//colorblendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
+	//colorblendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
+	//colorblendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
+	//colorblendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
 
 	VkPipelineColorBlendStateCreateInfo colorblending = {};
 	colorblending.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
@@ -166,10 +166,10 @@ void VulkanWindow::buildGraphicsPipeline()
 	//dynamic state
 	VkDynamicState dynamicStates[] = { VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_LINE_WIDTH };
 
-	VkPipelineDynamicStateCreateInfo dynamicState = {};
-	dynamicState.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
-	dynamicState.dynamicStateCount = 2;
-	dynamicState.pDynamicStates = dynamicStates;
+	//VkPipelineDynamicStateCreateInfo dynamicState = {};
+	//dynamicState.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+	//dynamicState.dynamicStateCount = 2;
+	//dynamicState.pDynamicStates = dynamicStates;
 
 	//pipeline layout
 	VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
@@ -195,7 +195,7 @@ void VulkanWindow::buildGraphicsPipeline()
 	pipelineInfo.pMultisampleState = &multisampling;
 	pipelineInfo.pDepthStencilState = nullptr;
 	pipelineInfo.pColorBlendState = &colorblending;
-	pipelineInfo.pDynamicState = &dynamicState;
+	//pipelineInfo.pDynamicState = &dynamicState;
 	pipelineInfo.layout = pipelineLayout;
 	pipelineInfo.renderPass = renderPass;
 	pipelineInfo.subpass = 0;

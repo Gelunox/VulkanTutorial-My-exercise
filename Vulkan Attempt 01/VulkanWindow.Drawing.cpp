@@ -69,8 +69,8 @@ void VulkanWindow::buildCommandbuffers()
 
 		vkBeginCommandBuffer( commandBuffers[i], &beginInfo );
 
-		VkClearValue clearColor = { 1.0f, 0.0f, 0.0f, 1.0f }; \
-			VkRenderPassBeginInfo renderpassInfo = {};
+		VkClearValue clearColor = { .0f, .0f, 0.0f, 1.0f };
+		VkRenderPassBeginInfo renderpassInfo = {};
 		renderpassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 		renderpassInfo.renderPass = renderPass;
 		renderpassInfo.framebuffer = swapchainFramebuffers[i];
@@ -106,11 +106,7 @@ void VulkanWindow::buildSemaphores()
 void VulkanWindow::drawFrame()
 {
 	uint32_t imageIndex;
-	if (vkAcquireNextImageKHR( logicalDevice, swapchain, numeric_limits<uint64_t>::max(), imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex ) != VK_SUCCESS
-		|| imageIndex >= commandBuffers.size())
-	{
-		return;
-	}
+	vkAcquireNextImageKHR( logicalDevice, swapchain, numeric_limits<uint64_t>::max(), imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex );
 	
 	VkSemaphore waitSemaphores[] = { imageAvailableSemaphore };
 	VkSemaphore signalSemaphores[] = { renderFinishedSemaphore };
@@ -118,6 +114,7 @@ void VulkanWindow::drawFrame()
 
 	VkSubmitInfo submitInfo = {};
 	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+	submitInfo.waitSemaphoreCount = 1;
 	submitInfo.pWaitSemaphores = waitSemaphores;
 	submitInfo.pWaitDstStageMask = waitstages;
 	submitInfo.commandBufferCount = 1;

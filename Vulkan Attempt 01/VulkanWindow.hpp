@@ -13,6 +13,21 @@ namespace com::gelunox::vulcanUtils
 	class VulkanWindow
 	{
 	private:
+		const int WIDTH = 500;
+		const int HEIGHT = 500;
+
+		const vector<const char*> validationLayers =
+		{
+			"VK_LAYER_LUNARG_standard_validation"
+		};
+		const bool enableValidationLayers = true;
+		VkDebugReportCallbackEXT callback;
+
+		const vector<const char*> deviceExtensions =
+		{
+			VK_KHR_SWAPCHAIN_EXTENSION_NAME
+		};
+
 		GLFWwindow * window;
 
 		VkInstance instance;
@@ -28,9 +43,6 @@ namespace com::gelunox::vulcanUtils
 		vector<VkImageView> swapchainImageViews;
 		VkFormat swapchainImageFormat;
 		VkExtent2D swapchainExtent;
-
-		VkShaderModule vertShaderModule;
-		VkShaderModule fragShaderModule;
 
 		VkRenderPass renderPass;
 		VkPipelineLayout pipelineLayout;
