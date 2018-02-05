@@ -29,6 +29,10 @@ namespace com::gelunox::vulcanUtils
 		VkShaderModule vertShaderModule;
 		VkShaderModule fragShaderModule;
 
+		VkRenderPass renderPass;
+		VkPipelineLayout pipelineLayout;
+		VkPipeline graphicsPipeline;
+
 		int graphicsQIndex = -1;
 		int presentationQIndex = -1;
 
@@ -48,6 +52,7 @@ namespace com::gelunox::vulcanUtils
 		void buildSwapchain();
 		void buildImages();
 
+		void buildRenderPass();
 		void buildGraphicsPipeline();
 
 		VkSurfaceCapabilitiesKHR getSurfaceCapabilities();

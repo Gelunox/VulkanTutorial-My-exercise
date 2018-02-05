@@ -71,10 +71,15 @@ VulkanWindow::VulkanWindow()
 	createLogicalDevice();
 	buildSwapchain();
 	buildImages();
+	buildRenderPass();
+	buildGraphicsPipeline();
 }
 
 VulkanWindow::~VulkanWindow()
 {
+	vkDestroyPipeline( device, graphicsPipeline, nullptr );
+	vkDestroyPipelineLayout( device, pipelineLayout, nullptr );
+	vkDestroyRenderPass( device, renderPass, nullptr );
 	for (VkImageView image : swapchainImageViews)
 	{
 		vkDestroyImageView( device, image, nullptr );
