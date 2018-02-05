@@ -6,6 +6,8 @@
 #include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp>
 
+#include <thread>
+#include <chrono>
 #include <set>
 #include <algorithm>
 
@@ -68,24 +70,39 @@ VulkanWindow::VulkanWindow()
 	}
 
 	selectPhysicalDevice();
+	findQFamilyIndexes();
 	createLogicalDevice();
+
 	buildSwapchain();
 	buildImages();
+
 	buildRenderPass();
 	buildGraphicsPipeline();
+
+	buildFramebuffers();
+	buildCommandpool();
+	buildCommandbuffers();
+	buildSemaphores();
 }
 
 VulkanWindow::~VulkanWindow()
 {
-	vkDestroyPipeline( device, graphicsPipeline, nullptr );
-	vkDestroyPipelineLayout( device, pipelineLayout, nullptr );
-	vkDestroyRenderPass( device, renderPass, nullptr );
+	vkDestroySemaphore( logicalDevice, renderFinishedSemaphore, nullptr );
+	vkDestroySemaphore( logicalDevice, renderFinishedSemaphore, nullptr );
+	vkDestroyCommandPool( logicalDevice, commandpool, nullptr );
+	for (VkFramebuffer framebuff : swapchainFramebuffers)
+	{
+		vkDestroyFramebuffer( logicalDevice, framebuff, nullptr );
+	}
+	vkDestroyPipeline( logicalDevice, graphicsPipeline, nullptr );
+	vkDestroyPipelineLayout( logicalDevice, pipelineLayout, nullptr );
+	vkDestroyRenderPass( logicalDevice, renderPass, nullptr );
 	for (VkImageView image : swapchainImageViews)
 	{
-		vkDestroyImageView( device, image, nullptr );
+		vkDestroyImageView( logicalDevice, image, nullptr );
 	}
-	vkDestroySwapchainKHR( device, swapchain, nullptr );
-	vkDestroyDevice( device, nullptr );
+	vkDestroySwapchainKHR( logicalDevice, swapchain, nullptr );
+	vkDestroyDevice( logicalDevice, nullptr );
 	vkDestroySurfaceKHR( instance, surface, nullptr );
 	vkDestroyInstance( instance, nullptr );
 	glfwDestroyWindow( window );
@@ -97,6 +114,8 @@ void VulkanWindow::run()
 	while (!glfwWindowShouldClose( window ))
 	{
 		glfwPollEvents();
+		drawFrame();
+		this_thread::sleep_for( chrono::microseconds( 33 ) );
 	}
 }
 
@@ -227,7 +246,7 @@ VkShaderModule VulkanWindow::createShaderModule( const vector<char>& code )
 
 	VkShaderModule shaderModule;
 
-	if (vkCreateShaderModule( device, &createInfo, nullptr, &shaderModule ) != VK_SUCCESS)
+	if (vkCreateShaderModule( logicalDevice, &createInfo, nullptr, &shaderModule ) != VK_SUCCESS)
 	{
 		throw runtime_error( "Can't create shader module" );
 	}

@@ -17,8 +17,11 @@ namespace com::gelunox::vulcanUtils
 
 		VkInstance instance;
 		VkPhysicalDevice physicalDevice;
-		VkDevice device;
+		VkDevice logicalDevice;
 		VkSurfaceKHR surface;
+
+		VkQueue graphicsQ;
+		VkQueue presentQ;
 
 		VkSwapchainKHR swapchain;
 		vector<VkImage> swapchainImages;
@@ -32,6 +35,12 @@ namespace com::gelunox::vulcanUtils
 		VkRenderPass renderPass;
 		VkPipelineLayout pipelineLayout;
 		VkPipeline graphicsPipeline;
+
+		vector<VkFramebuffer> swapchainFramebuffers;
+		VkCommandPool commandpool;
+		vector<VkCommandBuffer> commandBuffers;
+		VkSemaphore imageAvailableSemaphore;
+		VkSemaphore renderFinishedSemaphore;
 
 		int graphicsQIndex = -1;
 		int presentationQIndex = -1;
@@ -54,6 +63,13 @@ namespace com::gelunox::vulcanUtils
 
 		void buildRenderPass();
 		void buildGraphicsPipeline();
+
+		void buildFramebuffers();
+		void buildCommandpool();
+		void buildCommandbuffers();
+		void buildSemaphores();
+
+		void drawFrame();
 
 		VkSurfaceCapabilitiesKHR getSurfaceCapabilities();
 		VkExtent2D getSwapExtent( VkSurfaceCapabilitiesKHR& capabilities );

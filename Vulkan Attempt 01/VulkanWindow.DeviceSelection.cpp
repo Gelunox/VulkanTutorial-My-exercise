@@ -49,7 +49,6 @@ void VulkanWindow::selectPhysicalDevice()
 void VulkanWindow::createLogicalDevice()
 {
 	//Logical device creation
-	findQFamilyIndexes();
 	float queuePriority = 1.0f;
 
 	VkDeviceQueueCreateInfo graphicsQueueCreateInfo = {};
@@ -79,14 +78,12 @@ void VulkanWindow::createLogicalDevice()
 	deviceCreateInfo.enabledExtensionCount = 0;
 	deviceCreateInfo.enabledLayerCount = 0;
 
-	if (VK_SUCCESS != vkCreateDevice( physicalDevice, &deviceCreateInfo, nullptr, &device ))
+	if (VK_SUCCESS != vkCreateDevice( physicalDevice, &deviceCreateInfo, nullptr, &logicalDevice ))
 	{
 		throw runtime_error( "cannot create logical device" );
 	}
 
 	//retrieve queue handle
-	VkQueue graphicsQueue;
-	VkQueue presentQ;
-	vkGetDeviceQueue( device, graphicsQIndex, 0, &graphicsQueue );
-	vkGetDeviceQueue( device, presentationQIndex, 0, &presentQ );
+	vkGetDeviceQueue( logicalDevice, graphicsQIndex, 0, &graphicsQ );
+	vkGetDeviceQueue( logicalDevice, presentationQIndex, 0, &presentQ );
 }

@@ -38,14 +38,24 @@ void VulkanWindow::buildRenderPass()
 	subpass.colorAttachmentCount = 1;
 	subpass.pColorAttachments = &colorAttachRef;
 
+	VkSubpassDependency dependency = {};
+	dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
+	dependency.dstSubpass = 0;
+	dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+	dependency.srcAccessMask = 0;
+	dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+	dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+
 	VkRenderPassCreateInfo renderPassInfo = {};
 	renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
 	renderPassInfo.attachmentCount = 1;
 	renderPassInfo.pAttachments = &colorAttachment;
 	renderPassInfo.subpassCount = 1;
 	renderPassInfo.pSubpasses = &subpass;
+	renderPassInfo.dependencyCount = 1;
+	renderPassInfo.pDependencies = &dependency;
 
-	if (vkCreateRenderPass( device, &renderPassInfo, nullptr, &renderPass ) != VK_SUCCESS)
+	if (vkCreateRenderPass( logicalDevice, &renderPassInfo, nullptr, &renderPass ) != VK_SUCCESS)
 	{
 		throw std::runtime_error( "failed to create render pass!" );
 	}
@@ -169,7 +179,7 @@ void VulkanWindow::buildGraphicsPipeline()
 	pipelineLayoutInfo.pushConstantRangeCount = 0;
 	pipelineLayoutInfo.pPushConstantRanges = nullptr;
 
-	if (vkCreatePipelineLayout( device, &pipelineLayoutInfo, nullptr, &pipelineLayout ) != VK_SUCCESS)
+	if (vkCreatePipelineLayout( logicalDevice, &pipelineLayoutInfo, nullptr, &pipelineLayout ) != VK_SUCCESS)
 	{
 		throw runtime_error( "pipeline layout could not be created" );
 	}
@@ -192,11 +202,11 @@ void VulkanWindow::buildGraphicsPipeline()
 	pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 	pipelineInfo.basePipelineIndex = -1;
 
-	if (vkCreateGraphicsPipelines( device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline ) != VK_SUCCESS)
+	if (vkCreateGraphicsPipelines( logicalDevice, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline ) != VK_SUCCESS)
 	{
 		throw runtime_error( "graphics pipeline creation failed" );
 	}
 
-	vkDestroyShaderModule( device, vertShaderModule, nullptr );
-	vkDestroyShaderModule( device, fragShaderModule, nullptr );
+	vkDestroyShaderModule( logicalDevice, vertShaderModule, nullptr );
+	vkDestroyShaderModule( logicalDevice, fragShaderModule, nullptr );
 }

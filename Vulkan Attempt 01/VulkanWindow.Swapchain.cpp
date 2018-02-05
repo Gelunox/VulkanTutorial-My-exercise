@@ -36,21 +36,21 @@ void VulkanWindow::buildSwapchain()
 	createInfo.clipped = VK_TRUE;
 	createInfo.oldSwapchain = VK_NULL_HANDLE; //old swapchain if recreating because of resizing or whatever
 
-	if (vkCreateSwapchainKHR( device, &createInfo, nullptr, &swapchain ) != VK_SUCCESS)
+	if (vkCreateSwapchainKHR( logicalDevice, &createInfo, nullptr, &swapchain ) != VK_SUCCESS)
 	{
 		throw runtime_error( "Can't initiate swapchain" );
 	}
 	//need to requery because implementation is allowed to create more than was initially relayed
-	vkGetSwapchainImagesKHR( device, swapchain, &imageCount, nullptr );
+	vkGetSwapchainImagesKHR( logicalDevice, swapchain, &imageCount, nullptr );
 	swapchainImages.resize( imageCount );
-	vkGetSwapchainImagesKHR( device, swapchain, &imageCount, swapchainImages.data() );
+	vkGetSwapchainImagesKHR( logicalDevice, swapchain, &imageCount, swapchainImages.data() );
 }
 
 void VulkanWindow::buildImages()
 {
 	swapchainImageViews.resize( swapchainImages.size() );
 
-	for (uint32_t i = 0; i < swapchainImages.size(); i++)
+	for (size_t i = 0; i < swapchainImages.size(); i++)
 	{
 		VkImageViewCreateInfo createInfo = {};
 		createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
@@ -67,7 +67,7 @@ void VulkanWindow::buildImages()
 		createInfo.subresourceRange.baseArrayLayer = 0;
 		createInfo.subresourceRange.layerCount = 1;
 
-		if (vkCreateImageView( device, &createInfo, nullptr, &swapchainImageViews[i] ) != VK_SUCCESS)
+		if (vkCreateImageView( logicalDevice, &createInfo, nullptr, &swapchainImageViews[i] ) != VK_SUCCESS)
 		{
 			throw runtime_error( "Could not create an image view" );
 		}

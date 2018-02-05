@@ -121,6 +121,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="VulkanWindow.cpp" />
     <ClCompile Include="VulkanWindow.DeviceSelection.cpp" />
+    <ClCompile Include="VulkanWindow.Drawing.cpp" />
     <ClCompile Include="VulkanWindow.GraphicsPipeline.cpp" />
     <ClCompile Include="VulkanWindow.Swapchain.cpp" />
   </ItemGroup>
