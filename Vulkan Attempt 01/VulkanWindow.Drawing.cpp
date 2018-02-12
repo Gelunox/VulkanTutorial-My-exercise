@@ -91,7 +91,7 @@ void VulkanWindow::drawFrame()
 		recreateSwapchain();
 		return;
 	}
-	if( result != VK_SUCCESS || result != VK_SUBOPTIMAL_KHR )
+	if( result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR )
 	{
 		throw runtime_error( "error getting swapchain image" );
 	}
