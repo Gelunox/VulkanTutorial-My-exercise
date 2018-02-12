@@ -70,16 +70,17 @@ namespace com::gelunox::vulcanUtils
 		void createLogicalDevice();
 		void findQFamilyIndexes();
 
-		void buildSwapchain();
-		void buildImages();
 
-		void buildRenderPass();
-		void buildGraphicsPipeline();
+		void createSwapchain();
+		void createImages();
 
-		void buildFramebuffers();
-		void buildCommandpool();
-		void buildCommandbuffers();
-		void buildSemaphores();
+		void createRenderPass();
+		void createGraphicsPipeline();
+
+		void createFramebuffers();
+		void createCommandpool();
+		void createCommandbuffers();
+		void createSemaphores();
 
 		void drawFrame();
 

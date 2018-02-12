@@ -5,7 +5,7 @@ using namespace std;
 
 //https://vulkan-tutorial.com/Drawing_a_triangle/Presentation/Swap_chain
 
-void VulkanWindow::buildSwapchain()
+void VulkanWindow::createSwapchain()
 {
 	VkSurfaceCapabilitiesKHR capabilities = getSurfaceCapabilities();
 	swapchainExtent = getSwapExtent( capabilities );
@@ -58,7 +58,7 @@ void VulkanWindow::buildSwapchain()
 	vkGetSwapchainImagesKHR( logicalDevice, swapchain, &imageCount, swapchainImages.data() );
 }
 
-void VulkanWindow::buildImages()
+void VulkanWindow::createImages()
 {
 	swapchainImageViews.resize( swapchainImages.size() );
 

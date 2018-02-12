@@ -133,16 +133,16 @@ VulkanWindow::VulkanWindow()
 	findQFamilyIndexes();
 	createLogicalDevice();
 
-	buildSwapchain();
-	buildImages();
+	createSwapchain();
+	createImages();
 
-	buildRenderPass();
-	buildGraphicsPipeline();
+	createRenderPass();
+	createGraphicsPipeline();
 
-	buildFramebuffers();
-	buildCommandpool();
-	buildCommandbuffers();
-	buildSemaphores();
+	createFramebuffers();
+	createCommandpool();
+	createCommandbuffers();
+	createSemaphores();
 }
 
 VulkanWindow::~VulkanWindow()

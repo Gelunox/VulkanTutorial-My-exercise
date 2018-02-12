@@ -9,7 +9,7 @@
 using namespace com::gelunox::vulcanUtils;
 using namespace std;
 
-void VulkanWindow::buildFramebuffers()
+void VulkanWindow::createFramebuffers()
 {
 	swapchainFramebuffers.resize( swapchainImageViews.size() );
 
@@ -32,7 +32,7 @@ void VulkanWindow::buildFramebuffers()
 	}
 }
 
-void VulkanWindow::buildCommandpool()
+void VulkanWindow::createCommandpool()
 {
 	VkCommandPoolCreateInfo poolInfo = {};
 	poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
@@ -45,7 +45,7 @@ void VulkanWindow::buildCommandpool()
 	}
 }
 
-void VulkanWindow::buildCommandbuffers()
+void VulkanWindow::createCommandbuffers()
 {
 	commandBuffers.resize( swapchainFramebuffers.size() );
 
@@ -91,7 +91,7 @@ void VulkanWindow::buildCommandbuffers()
 	}
 }
 
-void VulkanWindow::buildSemaphores()
+void VulkanWindow::createSemaphores()
 {
 	VkSemaphoreCreateInfo spInfo = {};
 	spInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;

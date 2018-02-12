@@ -17,7 +17,7 @@ using namespace std;
 //https://vulkan-tutorial.com/Drawing_a_triangle/Graphics_pipeline_basics/Render_passes
 //https://vulkan-tutorial.com/Drawing_a_triangle/Graphics_pipeline_basics/Conclusion
 
-void VulkanWindow::buildRenderPass()
+void VulkanWindow::createRenderPass()
 {
 	VkAttachmentDescription colorAttachment = {};
 	colorAttachment.format = swapchainImageFormat;
@@ -61,7 +61,7 @@ void VulkanWindow::buildRenderPass()
 	}
 }
 
-void VulkanWindow::buildGraphicsPipeline()
+void VulkanWindow::createGraphicsPipeline()
 {
 	//shaders
 	vector<char> vertShader = readFile( "shaders/vert.spv" );
