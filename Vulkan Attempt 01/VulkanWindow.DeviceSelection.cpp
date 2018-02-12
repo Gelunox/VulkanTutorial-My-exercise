@@ -52,23 +52,17 @@ void VulkanWindow::createLogicalDevice()
 	float queuePriority = 1.0f;
 	vector<VkDeviceQueueCreateInfo> queueCreateInfos;
 
-	VkDeviceQueueCreateInfo graphicsQueueCreateInfo = {};
-	graphicsQueueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-	graphicsQueueCreateInfo.queueFamilyIndex = graphicsQIndex;
-	graphicsQueueCreateInfo.queueCount = 1;
-	graphicsQueueCreateInfo.pQueuePriorities = &queuePriority;
+	auto indices = queueIndices.asList();
 
-	queueCreateInfos.push_back( graphicsQueueCreateInfo );
-
-	if (graphicsQIndex != presentationQIndex)
+	for (auto index : indices)
 	{
-		VkDeviceQueueCreateInfo presentationQueueCreateInfo = {};
-		presentationQueueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-		presentationQueueCreateInfo.queueFamilyIndex = presentationQIndex;
-		presentationQueueCreateInfo.queueCount = 1;
-		presentationQueueCreateInfo.pQueuePriorities = &queuePriority;
+		VkDeviceQueueCreateInfo queueInfo = {};
+		queueInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+		queueInfo.queueFamilyIndex = index;
+		queueInfo.queueCount = 1;
+		queueInfo.pQueuePriorities = &queuePriority;
 
-		queueCreateInfos.push_back( presentationQueueCreateInfo );
+		queueCreateInfos.push_back( queueInfo );
 	}
 
 	//used device features
@@ -97,6 +91,6 @@ void VulkanWindow::createLogicalDevice()
 	}
 
 	//retrieve queue handle
-	vkGetDeviceQueue( logicalDevice, graphicsQIndex, 0, &graphicsQ );
-	vkGetDeviceQueue( logicalDevice, presentationQIndex, 0, &presentQ );
+	vkGetDeviceQueue( logicalDevice, queueIndices.graphics, 0, &graphicsQ );
+	vkGetDeviceQueue( logicalDevice, queueIndices.presentation, 0, &presentQ );
 }

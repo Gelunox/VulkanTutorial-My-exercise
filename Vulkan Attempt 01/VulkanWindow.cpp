@@ -74,8 +74,10 @@ VulkanWindow::VulkanWindow()
 	glfwInit();
 
 	glfwWindowHint( GLFW_CLIENT_API, GLFW_NO_API );
-	glfwWindowHint( GLFW_RESIZABLE, GLFW_FALSE );
-	window = glfwCreateWindow( WIDTH, HEIGHT, "Vulkan window", nullptr, nullptr );
+	window = glfwCreateWindow( width, height, "Vulkan window", nullptr, nullptr );
+
+	glfwSetWindowUserPointer( window, this );
+	glfwSetWindowSizeCallback( window, VulkanWindow::onWindowResized );
 
 	uint32_t glfwExtensionCount = 0;
 	const char** glfwExtensions;
@@ -133,13 +135,8 @@ VulkanWindow::VulkanWindow()
 	findQFamilyIndexes();
 	createLogicalDevice();
 
-	buildSwapchain();
-	buildImages();
+	swapchain = new Swapchain( width, height, physicalDevice, logicalDevice, surface, queueIndices );
 
-	buildRenderPass();
-	buildGraphicsPipeline();
-
-	buildFramebuffers();
 	buildCommandpool();
 	buildCommandbuffers();
 	buildSemaphores();
@@ -147,21 +144,11 @@ VulkanWindow::VulkanWindow()
 
 VulkanWindow::~VulkanWindow()
 {
+	vkDeviceWaitIdle( logicalDevice );
 	vkDestroySemaphore( logicalDevice, renderFinishedSemaphore, nullptr );
 	vkDestroySemaphore( logicalDevice, renderFinishedSemaphore, nullptr );
 	vkDestroyCommandPool( logicalDevice, commandpool, nullptr );
-	for (VkFramebuffer framebuff : swapchainFramebuffers)
-	{
-		vkDestroyFramebuffer( logicalDevice, framebuff, nullptr );
-	}
-	vkDestroyPipeline( logicalDevice, graphicsPipeline, nullptr );
-	vkDestroyPipelineLayout( logicalDevice, pipelineLayout, nullptr );
-	vkDestroyRenderPass( logicalDevice, renderPass, nullptr );
-	for (VkImageView image : swapchainImageViews)
-	{
-		vkDestroyImageView( logicalDevice, image, nullptr );
-	}
-	vkDestroySwapchainKHR( logicalDevice, swapchain, nullptr );
+	delete swapchain;
 	vkDestroyDevice( logicalDevice, nullptr );
 	vkDestroySurfaceKHR( instance, surface, nullptr );
 	DestroyDebugReportCallbackEXT( instance, callback, nullptr );
@@ -184,6 +171,25 @@ void VulkanWindow::run()
 	}
 }
 
+void VulkanWindow::onWindowResized( int width, int height )
+{
+	if (width == 0 || height == 0)
+	{
+		return;
+	}
+
+	this->width = width;
+	this->height = height;
+
+	recreateSwapchain();
+}
+
+void VulkanWindow::onWindowResized( GLFWwindow * window, int width, int height )
+{
+	VulkanWindow * app = reinterpret_cast<VulkanWindow*>(glfwGetWindowUserPointer( window ));
+	app->onWindowResized( width, height );
+}
+
 //https://vulkan-tutorial.com/Drawing_a_triangle/Setup/Physical_devices_and_queue_families
 //retrieve graphics query and presentation query
 void VulkanWindow::findQFamilyIndexes()
@@ -199,17 +205,17 @@ void VulkanWindow::findQFamilyIndexes()
 	{
 		if (queueFamily.queueCount > 0 && queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
 		{
-			graphicsQIndex = i;
+			queueIndices.graphics = i;
 		}
 
 		VkBool32 presentationSupport = false;
 		vkGetPhysicalDeviceSurfaceSupportKHR( physicalDevice, i, surface, &presentationSupport );
 		if (presentationSupport)
 		{
-			presentationQIndex = i;
+			queueIndices.presentation = i;
 		}
 
-		if (graphicsQIndex >= 0 && presentationQIndex >= 0)
+		if ( queueIndices.isComplete() )
 		{
 			return;
 		}
@@ -218,103 +224,19 @@ void VulkanWindow::findQFamilyIndexes()
 	}
 }
 
-//https://vulkan-tutorial.com/Drawing_a_triangle/Presentation/Window_surface
-
-VkSurfaceCapabilitiesKHR VulkanWindow::getSurfaceCapabilities()
+void VulkanWindow::recreateSwapchain()
 {
-	VkSurfaceCapabilitiesKHR capabilities;
+	//vkDeviceWaitIdle( logicalDevice );
+	//vkFreeCommandBuffers( logicalDevice, commandpool, static_cast<uint32_t>(commandBuffers.size()), commandBuffers.data() );
+	//delete swapchain;
+	//swapchain = new Swapchain( width, height, physicalDevice, logicalDevice, surface, queueIndices );
+	//buildCommandbuffers();
 
-	vkGetPhysicalDeviceSurfaceCapabilitiesKHR( physicalDevice, surface, &capabilities );
+	Swapchain * old = swapchain;
 
-	return capabilities;
-}
-
-VkExtent2D VulkanWindow::getSwapExtent( VkSurfaceCapabilitiesKHR& capabilities )
-{
-	if (capabilities.currentExtent.width != numeric_limits<uint32_t>::max())
-	{
-		return capabilities.currentExtent;
-	}
-
-	VkExtent2D extend = { WIDTH, HEIGHT };
-	extend.width = max( capabilities.minImageExtent.width, min( capabilities.maxImageExtent.width, extend.width ) );
-	extend.height = max( capabilities.minImageExtent.height, min( capabilities.maxImageExtent.height, extend.height ) );
-
-	return extend;
-}
-
-VkSurfaceFormatKHR VulkanWindow::getSurfaceFormat()
-{
-	uint32_t formatCount;
-	vector<VkSurfaceFormatKHR> formats;
-
-	vkGetPhysicalDeviceSurfaceFormatsKHR( physicalDevice, surface, &formatCount, nullptr );
-
-	if (formatCount)
-	{
-		formats.resize( formatCount );
-		vkGetPhysicalDeviceSurfaceFormatsKHR( physicalDevice, surface, &formatCount, formats.data() );
-	}
-
-	if (formats.size() == 1 && formats[0].format == VK_FORMAT_UNDEFINED)
-	{
-		return { VK_FORMAT_B8G8R8A8_UNORM, VK_COLOR_SPACE_SRGB_NONLINEAR_KHR };
-	}
-
-	for (VkSurfaceFormatKHR format : formats)
-	{
-		if (format.format == VK_FORMAT_B8G8R8A8_UNORM && format.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
-		{
-			return format;
-		}
-	}
-
-	return formats[0];
-}
-
-VkPresentModeKHR VulkanWindow::getPresentMode()
-{
-	uint32_t modeCount;
-	vkGetPhysicalDeviceSurfacePresentModesKHR( physicalDevice, surface, &modeCount, nullptr );
-
-	vector<VkPresentModeKHR> modes;
-
-	if (modeCount)
-	{
-		modes.resize( modeCount );
-		vkGetPhysicalDeviceSurfacePresentModesKHR( physicalDevice, surface, &modeCount, modes.data() );
-	}
-
-	VkPresentModeKHR mode = VK_PRESENT_MODE_FIFO_KHR;
-
-	for (VkPresentModeKHR presentMode : modes)
-	{
-		if (presentMode == VK_PRESENT_MODE_MAILBOX_KHR)
-		{
-			return presentMode;
-		}
-		if (presentMode == VK_PRESENT_MODE_IMMEDIATE_KHR)
-		{
-			mode = presentMode;
-		}
-	}
-
-	return mode;
-}
-
-VkShaderModule VulkanWindow::createShaderModule( const vector<char>& code )
-{
-	VkShaderModuleCreateInfo createInfo = {};
-	createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-	createInfo.codeSize = code.size();
-	createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
-
-	VkShaderModule shaderModule;
-
-	if (vkCreateShaderModule( logicalDevice, &createInfo, nullptr, &shaderModule ) != VK_SUCCESS)
-	{
-		throw runtime_error( "Can't create shader module" );
-	}
-
-	return shaderModule;
+	vkDeviceWaitIdle( logicalDevice );
+	swapchain = new Swapchain( width, height, physicalDevice, logicalDevice, surface, queueIndices, old );
+	vkFreeCommandBuffers( logicalDevice, commandpool, static_cast<uint32_t>(commandBuffers.size()), commandBuffers.data() );
+	buildCommandbuffers();
+	delete old;
 }

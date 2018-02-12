@@ -5,6 +5,8 @@
 
 #include <GLFW/glfw3.h>
 #include <vector>
+#include "QueueIndices.hpp"
+#include "Swapchain.hpp"
 
 using namespace std;
 
@@ -13,8 +15,8 @@ namespace com::gelunox::vulcanUtils
 	class VulkanWindow
 	{
 	private:
-		const int WIDTH = 500;
-		const int HEIGHT = 500;
+		int width = 500;
+		int height = 500;
 
 		const vector<const char*> validationLayers =
 		{
@@ -38,24 +40,14 @@ namespace com::gelunox::vulcanUtils
 		VkQueue graphicsQ;
 		VkQueue presentQ;
 
-		VkSwapchainKHR swapchain;
-		vector<VkImage> swapchainImages;
-		vector<VkImageView> swapchainImageViews;
-		VkFormat swapchainImageFormat;
-		VkExtent2D swapchainExtent;
+		Swapchain * swapchain;
 
-		VkRenderPass renderPass;
-		VkPipelineLayout pipelineLayout;
-		VkPipeline graphicsPipeline;
-
-		vector<VkFramebuffer> swapchainFramebuffers;
 		VkCommandPool commandpool;
 		vector<VkCommandBuffer> commandBuffers;
 		VkSemaphore imageAvailableSemaphore;
 		VkSemaphore renderFinishedSemaphore;
 
-		int graphicsQIndex = -1;
-		int presentationQIndex = -1;
+		QueueIndices queueIndices;
 
 	public:
 		static bool isSuitableGpu( VkPhysicalDevice device );
@@ -65,29 +57,20 @@ namespace com::gelunox::vulcanUtils
 
 		void run();
 
+		void onWindowResized( int width, int height );
+		static void onWindowResized( GLFWwindow * window, int width, int height );
+
 	private:
 		void selectPhysicalDevice();
 		void createLogicalDevice();
 		void findQFamilyIndexes();
 
-		void buildSwapchain();
-		void buildImages();
+		void recreateSwapchain();
 
-		void buildRenderPass();
-		void buildGraphicsPipeline();
-
-		void buildFramebuffers();
 		void buildCommandpool();
 		void buildCommandbuffers();
 		void buildSemaphores();
 
 		void drawFrame();
-
-		VkSurfaceCapabilitiesKHR getSurfaceCapabilities();
-		VkExtent2D getSwapExtent( VkSurfaceCapabilitiesKHR& capabilities );
-		VkSurfaceFormatKHR getSurfaceFormat();
-		VkPresentModeKHR getPresentMode();
-
-		VkShaderModule createShaderModule( const vector<char>& code );
 	};
 }

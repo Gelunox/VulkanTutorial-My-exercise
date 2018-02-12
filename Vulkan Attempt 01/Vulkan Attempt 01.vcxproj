@@ -119,17 +119,20 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Pipeline.cpp" />
+    <ClCompile Include="Swapchain.cpp" />
     <ClCompile Include="VulkanWindow.cpp" />
     <ClCompile Include="VulkanWindow.DeviceSelection.cpp" />
     <ClCompile Include="VulkanWindow.Drawing.cpp" />
-    <ClCompile Include="VulkanWindow.GraphicsPipeline.cpp" />
-    <ClCompile Include="VulkanWindow.Swapchain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\shader.frag" />
     <None Include="shaders\shader.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Pipeline.hpp" />
+    <ClInclude Include="QueueIndices.hpp" />
+    <ClInclude Include="Swapchain.hpp" />
     <ClInclude Include="util.hpp" />
     <ClInclude Include="VulkanWindow.hpp" />
   </ItemGroup>

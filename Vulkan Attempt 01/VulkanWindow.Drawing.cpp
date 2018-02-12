@@ -9,34 +9,11 @@
 using namespace com::gelunox::vulcanUtils;
 using namespace std;
 
-void VulkanWindow::buildFramebuffers()
-{
-	swapchainFramebuffers.resize( swapchainImageViews.size() );
-
-	for (size_t i = 0; i < swapchainImageViews.size(); i++)
-	{
-		VkImageView attachments[] = { swapchainImageViews[i] };
-		VkFramebufferCreateInfo framebuffInfo = {};
-		framebuffInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-		framebuffInfo.renderPass = renderPass;
-		framebuffInfo.attachmentCount = 1;
-		framebuffInfo.pAttachments = attachments;
-		framebuffInfo.width = swapchainExtent.width;
-		framebuffInfo.height = swapchainExtent.height;
-		framebuffInfo.layers = 1;
-
-		if (vkCreateFramebuffer( logicalDevice, &framebuffInfo, nullptr, &swapchainFramebuffers[i] ) != VK_SUCCESS)
-		{
-			throw runtime_error( "framebuffer could not be created" );
-		}
-	}
-}
-
 void VulkanWindow::buildCommandpool()
 {
 	VkCommandPoolCreateInfo poolInfo = {};
 	poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-	poolInfo.queueFamilyIndex = graphicsQIndex;
+	poolInfo.queueFamilyIndex = queueIndices.graphics;
 	poolInfo.flags = 0;
 
 	if (vkCreateCommandPool( logicalDevice, &poolInfo, nullptr, &commandpool ) != VK_SUCCESS)
@@ -47,7 +24,8 @@ void VulkanWindow::buildCommandpool()
 
 void VulkanWindow::buildCommandbuffers()
 {
-	commandBuffers.resize( swapchainFramebuffers.size() );
+	auto framebuffers = swapchain->getFrameBuffers();
+	commandBuffers.resize( framebuffers.size() );
 
 	VkCommandBufferAllocateInfo allocInfo = {};
 	allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -72,15 +50,15 @@ void VulkanWindow::buildCommandbuffers()
 		VkClearValue clearColor = { .0f, .0f, 0.0f, 1.0f };
 		VkRenderPassBeginInfo renderpassInfo = {};
 		renderpassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-		renderpassInfo.renderPass = renderPass;
-		renderpassInfo.framebuffer = swapchainFramebuffers[i];
+		renderpassInfo.renderPass = swapchain->getPipeline()->getRenderPass();
+		renderpassInfo.framebuffer = framebuffers[i];
 		renderpassInfo.renderArea.offset = { 0,0 };
-		renderpassInfo.renderArea.extent = swapchainExtent;
+		renderpassInfo.renderArea.extent = swapchain->getExtent();
 		renderpassInfo.clearValueCount = 1;
 		renderpassInfo.pClearValues = &clearColor;
 
 		vkCmdBeginRenderPass( commandBuffers[i], &renderpassInfo, VK_SUBPASS_CONTENTS_INLINE );
-		vkCmdBindPipeline( commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline );
+		vkCmdBindPipeline( commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, swapchain->getPipeline()->getPipeline() );
 		vkCmdDraw( commandBuffers[i], 3, 1, 0, 0 );
 		vkCmdEndRenderPass( commandBuffers[i] );
 
@@ -106,8 +84,18 @@ void VulkanWindow::buildSemaphores()
 void VulkanWindow::drawFrame()
 {
 	uint32_t imageIndex;
-	vkAcquireNextImageKHR( logicalDevice, swapchain, numeric_limits<uint64_t>::max(), imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex );
+	VkResult result = vkAcquireNextImageKHR( logicalDevice, swapchain->getSwapchain(), numeric_limits<uint64_t>::max(), imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex );
 	
+	if (result == VK_ERROR_OUT_OF_DATE_KHR)
+	{
+		recreateSwapchain();
+		return;
+	}
+	if( result != VK_SUCCESS || result != VK_SUBOPTIMAL_KHR )
+	{
+		throw runtime_error( "error getting swapchain image" );
+	}
+
 	VkSemaphore waitSemaphores[] = { imageAvailableSemaphore };
 	VkSemaphore signalSemaphores[] = { renderFinishedSemaphore };
 	VkPipelineStageFlags waitstages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
@@ -127,7 +115,7 @@ void VulkanWindow::drawFrame()
 		throw runtime_error( "draw submission failed" );
 	}
 
-	VkSwapchainKHR swapchains[] = { swapchain };
+	VkSwapchainKHR swapchains[] = { swapchain->getSwapchain() };
 
 	VkPresentInfoKHR presentInfo = {};
 	presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
@@ -138,5 +126,16 @@ void VulkanWindow::drawFrame()
 	presentInfo.pImageIndices = &imageIndex;
 	presentInfo.pResults = nullptr;
 
-	vkQueuePresentKHR( presentQ, &presentInfo );
+	result = vkQueuePresentKHR( presentQ, &presentInfo );
+
+	if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR)
+	{
+		recreateSwapchain();
+	}
+	else if (result != VK_SUCCESS)
+	{
+		throw std::runtime_error( "failed to present swap chain image!" );
+	}
+
+	vkQueueWaitIdle( presentQ );
 }
