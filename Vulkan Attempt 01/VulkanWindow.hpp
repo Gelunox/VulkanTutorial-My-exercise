@@ -5,6 +5,8 @@
 
 #include <GLFW/glfw3.h>
 #include <vector>
+
+#include "util.hpp"
 #include "QueueIndices.hpp"
 #include "Swapchain.hpp"
 

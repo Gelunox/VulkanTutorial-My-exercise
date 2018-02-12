@@ -3,6 +3,8 @@
 #include <vulkan/vulkan.h>
 #include <vector>
 
+#include "util.hpp"
+
 using namespace std;
 
 namespace com::gelunox::vulcanUtils

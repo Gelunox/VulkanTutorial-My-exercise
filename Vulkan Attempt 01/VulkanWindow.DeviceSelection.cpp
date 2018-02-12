@@ -1,4 +1,5 @@
 #include "VulkanWindow.hpp"
+
 #include <iostream>
 
 using namespace com::gelunox::vulcanUtils;
@@ -24,9 +25,9 @@ void VulkanWindow::selectPhysicalDevice()
 		VkPhysicalDeviceProperties deviceProps;
 		vkGetPhysicalDeviceProperties( device, &deviceProps );
 
-		cout << deviceProps.deviceName << endl;
+		println( deviceProps.deviceName );
 	}
-	cout << endl;
+	println( "" );
 
 	physicalDevice = VK_NULL_HANDLE;
 

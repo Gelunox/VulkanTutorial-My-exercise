@@ -1,6 +1,5 @@
 #include "Pipeline.hpp"
 
-#include "util.hpp"
 #include "Swapchain.hpp"
 
 using namespace std;

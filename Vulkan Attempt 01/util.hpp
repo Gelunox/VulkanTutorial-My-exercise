@@ -4,12 +4,23 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <iostream>
 
 using namespace std;
 
-
 namespace com::gelunox::vulcanUtils
 {
+	inline static void println( const string& str ... )
+	{
+		cout << str << endl;
+	}
+
+	inline static void errln( const string& str ... )
+	{
+		cerr << str << endl;
+	}
+
+
 	static vector<char> readFile( const string& filename )
 	{
 		ifstream file( filename, ios::ate | ios::binary );

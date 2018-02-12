@@ -1,8 +1,9 @@
 #include "VulkanWindow.hpp"
 
-#include <iostream>
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
+
+#include "util.hpp"
 
 #include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp>
@@ -26,7 +27,7 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
 	const char* msg,
 	void* userData ) {
 
-	cerr << "validation layer: " << msg << endl;
+	errln( "validation layer: " , msg );
 
 	return VK_FALSE;
 }
@@ -145,7 +146,7 @@ VulkanWindow::VulkanWindow()
 VulkanWindow::~VulkanWindow()
 {
 	vkDeviceWaitIdle( logicalDevice );
-	vkDestroySemaphore( logicalDevice, renderFinishedSemaphore, nullptr );
+	vkDestroySemaphore( logicalDevice, imageAvailableSemaphore, nullptr );
 	vkDestroySemaphore( logicalDevice, renderFinishedSemaphore, nullptr );
 	vkDestroyCommandPool( logicalDevice, commandpool, nullptr );
 	delete swapchain;
@@ -155,10 +156,6 @@ VulkanWindow::~VulkanWindow()
 	vkDestroyInstance( instance, nullptr );
 	glfwDestroyWindow( window );
 	glfwTerminate();
-
-
-	char c;
-	std::cin >> c;
 }
 
 void VulkanWindow::run()
@@ -226,12 +223,6 @@ void VulkanWindow::findQFamilyIndexes()
 
 void VulkanWindow::recreateSwapchain()
 {
-	//vkDeviceWaitIdle( logicalDevice );
-	//vkFreeCommandBuffers( logicalDevice, commandpool, static_cast<uint32_t>(commandBuffers.size()), commandBuffers.data() );
-	//delete swapchain;
-	//swapchain = new Swapchain( width, height, physicalDevice, logicalDevice, surface, queueIndices );
-	//buildCommandbuffers();
-
 	Swapchain * old = swapchain;
 
 	vkDeviceWaitIdle( logicalDevice );

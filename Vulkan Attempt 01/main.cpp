@@ -1,12 +1,19 @@
 #include "VulkanWindow.hpp"
 
+#include <iostream>
+
 using namespace com::gelunox::vulcanUtils;
 
 int main()
 {
-	VulkanWindow window;
+	{
+		VulkanWindow window;
 
-	window.run();
+		window.run();
+	}
+
+	std::cout << "Press enter to continue...";
+	getchar();
 
 	return 0;
 }
