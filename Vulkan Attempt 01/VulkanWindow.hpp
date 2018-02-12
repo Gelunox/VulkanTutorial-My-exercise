@@ -13,8 +13,8 @@ namespace com::gelunox::vulcanUtils
 	class VulkanWindow
 	{
 	private:
-		const int WIDTH = 500;
-		const int HEIGHT = 500;
+		int width = 500;
+		int height = 500;
 
 		const vector<const char*> validationLayers =
 		{
@@ -65,12 +65,16 @@ namespace com::gelunox::vulcanUtils
 
 		void run();
 
+		void onWindowResized( int width, int height );
+		static void onWindowResized( GLFWwindow * window, int width, int height );
+
 	private:
 		void selectPhysicalDevice();
 		void createLogicalDevice();
 		void findQFamilyIndexes();
 
-
+		void cleanupSwapchain();
+		void recreateSwapchain();
 		void createSwapchain();
 		void createImages();
 

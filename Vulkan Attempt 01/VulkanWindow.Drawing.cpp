@@ -106,8 +106,18 @@ void VulkanWindow::createSemaphores()
 void VulkanWindow::drawFrame()
 {
 	uint32_t imageIndex;
-	vkAcquireNextImageKHR( logicalDevice, swapchain, numeric_limits<uint64_t>::max(), imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex );
+	VkResult result = vkAcquireNextImageKHR( logicalDevice, swapchain, numeric_limits<uint64_t>::max(), imageAvailableSemaphore, VK_NULL_HANDLE, &imageIndex );
 	
+	if (result == VK_ERROR_OUT_OF_DATE_KHR)
+	{
+		recreateSwapchain();
+		return;
+	}
+	else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)
+	{
+		throw std::runtime_error( "failed to acquire swap chain image!" );
+	}
+
 	VkSemaphore waitSemaphores[] = { imageAvailableSemaphore };
 	VkSemaphore signalSemaphores[] = { renderFinishedSemaphore };
 	VkPipelineStageFlags waitstages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
@@ -139,4 +149,15 @@ void VulkanWindow::drawFrame()
 	presentInfo.pResults = nullptr;
 
 	vkQueuePresentKHR( presentQ, &presentInfo );
+
+	if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR)
+	{
+		recreateSwapchain();
+	}
+	else if (result != VK_SUCCESS)
+	{
+		throw std::runtime_error( "failed to present swap chain image!" );
+	}
+
+	vkQueueWaitIdle( presentQ );
 }

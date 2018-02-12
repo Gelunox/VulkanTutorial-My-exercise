@@ -74,8 +74,10 @@ VulkanWindow::VulkanWindow()
 	glfwInit();
 
 	glfwWindowHint( GLFW_CLIENT_API, GLFW_NO_API );
-	glfwWindowHint( GLFW_RESIZABLE, GLFW_FALSE );
-	window = glfwCreateWindow( WIDTH, HEIGHT, "Vulkan window", nullptr, nullptr );
+	window = glfwCreateWindow( width, height, "Vulkan window", nullptr, nullptr );
+
+	glfwSetWindowUserPointer( window, this );
+	glfwSetWindowSizeCallback( window, VulkanWindow::onWindowResized );
 
 	uint32_t glfwExtensionCount = 0;
 	const char** glfwExtensions;
@@ -147,21 +149,14 @@ VulkanWindow::VulkanWindow()
 
 VulkanWindow::~VulkanWindow()
 {
+	vkDeviceWaitIdle( logicalDevice );
+
 	vkDestroySemaphore( logicalDevice, renderFinishedSemaphore, nullptr );
 	vkDestroySemaphore( logicalDevice, renderFinishedSemaphore, nullptr );
 	vkDestroyCommandPool( logicalDevice, commandpool, nullptr );
-	for (VkFramebuffer framebuff : swapchainFramebuffers)
-	{
-		vkDestroyFramebuffer( logicalDevice, framebuff, nullptr );
-	}
-	vkDestroyPipeline( logicalDevice, graphicsPipeline, nullptr );
-	vkDestroyPipelineLayout( logicalDevice, pipelineLayout, nullptr );
-	vkDestroyRenderPass( logicalDevice, renderPass, nullptr );
-	for (VkImageView image : swapchainImageViews)
-	{
-		vkDestroyImageView( logicalDevice, image, nullptr );
-	}
-	vkDestroySwapchainKHR( logicalDevice, swapchain, nullptr );
+
+	cleanupSwapchain();
+
 	vkDestroyDevice( logicalDevice, nullptr );
 	vkDestroySurfaceKHR( instance, surface, nullptr );
 	DestroyDebugReportCallbackEXT( instance, callback, nullptr );
@@ -182,6 +177,24 @@ void VulkanWindow::run()
 		drawFrame();
 		this_thread::sleep_for( chrono::milliseconds( 33 ) );
 	}
+}
+
+void VulkanWindow::onWindowResized( int width, int height )
+{
+	if (width == 0 || height == 0)
+	{
+		return;
+	}
+	this->width = width;
+	this->height = height;
+
+	recreateSwapchain();
+}
+
+void VulkanWindow::onWindowResized( GLFWwindow * window, int width, int height )
+{
+	VulkanWindow * app = reinterpret_cast<VulkanWindow*>(glfwGetWindowUserPointer( window ));
+	app->onWindowResized( width, height );
 }
 
 //https://vulkan-tutorial.com/Drawing_a_triangle/Setup/Physical_devices_and_queue_families
@@ -236,7 +249,7 @@ VkExtent2D VulkanWindow::getSwapExtent( VkSurfaceCapabilitiesKHR& capabilities )
 		return capabilities.currentExtent;
 	}
 
-	VkExtent2D extend = { WIDTH, HEIGHT };
+	VkExtent2D extend = { width, height };
 	extend.width = max( capabilities.minImageExtent.width, min( capabilities.maxImageExtent.width, extend.width ) );
 	extend.height = max( capabilities.minImageExtent.height, min( capabilities.maxImageExtent.height, extend.height ) );
 

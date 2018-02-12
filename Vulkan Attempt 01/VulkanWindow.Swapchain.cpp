@@ -1,9 +1,42 @@
 #include "VulkanWindow.hpp"
 
+#include <stdint.h>
+
 using namespace com::gelunox::vulcanUtils;
 using namespace std;
 
 //https://vulkan-tutorial.com/Drawing_a_triangle/Presentation/Swap_chain
+
+void VulkanWindow::cleanupSwapchain()
+{
+	for (VkFramebuffer framebuff : swapchainFramebuffers)
+	{
+		vkDestroyFramebuffer( logicalDevice, framebuff, nullptr );
+	}
+	vkFreeCommandBuffers( logicalDevice, commandpool, static_cast<uint32_t>(commandBuffers.size()), commandBuffers.data());
+	vkDestroyPipeline( logicalDevice, graphicsPipeline, nullptr );
+	vkDestroyPipelineLayout( logicalDevice, pipelineLayout, nullptr );
+	vkDestroyRenderPass( logicalDevice, renderPass, nullptr );
+	for (VkImageView image : swapchainImageViews)
+	{
+		vkDestroyImageView( logicalDevice, image, nullptr );
+	}
+	vkDestroySwapchainKHR( logicalDevice, swapchain, nullptr );
+}
+
+void VulkanWindow::recreateSwapchain()
+{
+	vkDeviceWaitIdle( logicalDevice );
+
+	cleanupSwapchain();
+
+	createSwapchain();
+	createImages();
+	createRenderPass();
+	createGraphicsPipeline();
+	createFramebuffers();
+	createCommandbuffers();
+}
 
 void VulkanWindow::createSwapchain()
 {
