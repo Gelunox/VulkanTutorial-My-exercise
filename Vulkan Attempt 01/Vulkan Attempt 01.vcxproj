@@ -134,6 +134,7 @@
     <ClInclude Include="QueueIndices.hpp" />
     <ClInclude Include="Swapchain.hpp" />
     <ClInclude Include="util.hpp" />
+    <ClInclude Include="Vertex.hpp" />
     <ClInclude Include="VulkanWindow.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

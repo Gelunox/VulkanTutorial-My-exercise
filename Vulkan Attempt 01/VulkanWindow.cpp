@@ -139,6 +139,7 @@ VulkanWindow::VulkanWindow()
 	swapchain = new Swapchain( width, height, physicalDevice, logicalDevice, surface, queueIndices );
 
 	buildCommandpool();
+	createVertexBuffers();
 	buildCommandbuffers();
 	buildSemaphores();
 }
@@ -146,10 +147,17 @@ VulkanWindow::VulkanWindow()
 VulkanWindow::~VulkanWindow()
 {
 	vkDeviceWaitIdle( logicalDevice );
+
 	vkDestroySemaphore( logicalDevice, imageAvailableSemaphore, nullptr );
 	vkDestroySemaphore( logicalDevice, renderFinishedSemaphore, nullptr );
+
 	vkDestroyCommandPool( logicalDevice, commandpool, nullptr );
+
 	delete swapchain;
+
+	vkDestroyBuffer( logicalDevice, vertexBuffer, nullptr );
+	vkFreeMemory( logicalDevice, vertexBufferMemory, nullptr );
+
 	vkDestroyDevice( logicalDevice, nullptr );
 	vkDestroySurfaceKHR( instance, surface, nullptr );
 	DestroyDebugReportCallbackEXT( instance, callback, nullptr );
@@ -219,6 +227,22 @@ void VulkanWindow::findQFamilyIndexes()
 
 		i++;
 	}
+}
+
+uint32_t VulkanWindow::findMemoryType( uint32_t typeFilter, VkMemoryPropertyFlags properties )
+{
+	VkPhysicalDeviceMemoryProperties memProps;
+	vkGetPhysicalDeviceMemoryProperties( physicalDevice, &memProps );
+
+	for (uint32_t i = 0; i < memProps.memoryTypeCount; i++)
+	{
+		if (typeFilter & (1 << i) && (memProps.memoryTypes[i].propertyFlags & properties) == properties)
+		{
+			return i;
+		}
+	}
+
+	throw runtime_error( "suitable memory type not found" );
 }
 
 void VulkanWindow::recreateSwapchain()

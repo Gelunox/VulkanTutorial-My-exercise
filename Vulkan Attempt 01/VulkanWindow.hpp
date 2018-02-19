@@ -5,8 +5,11 @@
 
 #include <GLFW/glfw3.h>
 #include <vector>
+#include <glm/vec4.hpp>
+#include <glm/mat4x4.hpp>
 
 #include "util.hpp"
+#include "Vertex.hpp"
 #include "QueueIndices.hpp"
 #include "Swapchain.hpp"
 
@@ -45,11 +48,20 @@ namespace com::gelunox::vulcanUtils
 		Swapchain * swapchain;
 
 		VkCommandPool commandpool;
+		VkBuffer vertexBuffer;
+		VkDeviceMemory vertexBufferMemory;
 		vector<VkCommandBuffer> commandBuffers;
 		VkSemaphore imageAvailableSemaphore;
 		VkSemaphore renderFinishedSemaphore;
 
 		QueueIndices queueIndices;
+
+		const vector<Vertex> vertices =
+		{
+			{ {  0.0f, -0.5f },{ 1.0f, 0.0f, 0.0f } },
+			{ {  0.5f,  0.5f },{ 0.0f, 1.0f, 0.0f } },
+			{ { -0.5f,  0.5f },{ 0.0f, 0.0f, 1.0f } }
+		};
 
 	public:
 		static bool isSuitableGpu( VkPhysicalDevice device );
@@ -66,10 +78,12 @@ namespace com::gelunox::vulcanUtils
 		void selectPhysicalDevice();
 		void createLogicalDevice();
 		void findQFamilyIndexes();
+		uint32_t findMemoryType( uint32_t typeFilter, VkMemoryPropertyFlags properties );
 
 		void recreateSwapchain();
 
 		void buildCommandpool();
+		void createVertexBuffers();
 		void buildCommandbuffers();
 		void buildSemaphores();
 

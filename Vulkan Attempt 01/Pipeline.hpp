@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "util.hpp"
+#include "Vertex.hpp"
 
 using namespace std;
 

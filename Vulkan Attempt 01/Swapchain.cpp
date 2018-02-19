@@ -165,8 +165,8 @@ VkExtent2D Swapchain::getExtent( uint32_t width, uint32_t height, VkSurfaceCapab
 	}
 
 	VkExtent2D extend = { width, height };
-	extend.width = max( capabilities.minImageExtent.width, min( capabilities.maxImageExtent.width, extend.width ) );
-	extend.height = max( capabilities.minImageExtent.height, min( capabilities.maxImageExtent.height, extend.height ) );
+	extend.width = std::max( capabilities.minImageExtent.width, std::min( capabilities.maxImageExtent.width, extend.width ) );
+	extend.height = std::max( capabilities.minImageExtent.height, std::min( capabilities.maxImageExtent.height, extend.height ) );
 
 	return extend;
 }
