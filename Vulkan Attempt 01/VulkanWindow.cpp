@@ -139,7 +139,9 @@ VulkanWindow::VulkanWindow()
 	swapchain = new Swapchain( width, height, physicalDevice, logicalDevice, surface, queueIndices );
 
 	buildCommandpool();
+
 	createVertexBuffers();
+
 	buildCommandbuffers();
 	buildSemaphores();
 }

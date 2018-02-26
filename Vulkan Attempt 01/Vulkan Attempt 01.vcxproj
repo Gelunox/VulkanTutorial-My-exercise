@@ -121,6 +121,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Pipeline.cpp" />
     <ClCompile Include="Swapchain.cpp" />
+    <ClCompile Include="VulkanWindow.MemoryBuffers.cpp" />
     <ClCompile Include="VulkanWindow.cpp" />
     <ClCompile Include="VulkanWindow.DeviceSelection.cpp" />
     <ClCompile Include="VulkanWindow.Drawing.cpp" />

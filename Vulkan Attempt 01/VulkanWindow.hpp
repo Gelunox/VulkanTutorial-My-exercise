@@ -47,9 +47,10 @@ namespace com::gelunox::vulcanUtils
 
 		Swapchain * swapchain;
 
-		VkCommandPool commandpool;
 		VkBuffer vertexBuffer;
 		VkDeviceMemory vertexBufferMemory;
+
+		VkCommandPool commandpool;
 		vector<VkCommandBuffer> commandBuffers;
 		VkSemaphore imageAvailableSemaphore;
 		VkSemaphore renderFinishedSemaphore;
@@ -58,9 +59,9 @@ namespace com::gelunox::vulcanUtils
 
 		const vector<Vertex> vertices =
 		{
-			{ {  0.0f, -0.5f },{ 1.0f, 0.0f, 0.0f } },
-			{ {  0.5f,  0.5f },{ 0.0f, 1.0f, 0.0f } },
-			{ { -0.5f,  0.5f },{ 0.0f, 0.0f, 1.0f } }
+			{ {  0.0f, -0.9f },{ 1.0f, 0.0f, 0.0f } },
+			{ {  0.9f,  0.9f },{ 0.0f, 1.0f, 0.0f } },
+			{ { -0.9f,  0.9f },{ 0.0f, 0.0f, 1.0f } }
 		};
 
 	public:
@@ -83,7 +84,11 @@ namespace com::gelunox::vulcanUtils
 		void recreateSwapchain();
 
 		void buildCommandpool();
+
 		void createVertexBuffers();
+		void createBuffer( VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags property, VkBuffer &buffer, VkDeviceMemory &memory );
+		void copyBuffer( VkBuffer src, VkBuffer dst, VkDeviceSize size );
+
 		void buildCommandbuffers();
 		void buildSemaphores();
 
