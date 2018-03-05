@@ -48,7 +48,9 @@ namespace com::gelunox::vulcanUtils
 		Swapchain * swapchain;
 
 		VkBuffer vertexBuffer;
-		VkDeviceMemory vertexBufferMemory;
+		VkDeviceMemory vertexMemory;
+		VkBuffer indexBuffer;
+		VkDeviceMemory indexMemory;
 
 		VkCommandPool commandpool;
 		vector<VkCommandBuffer> commandBuffers;
@@ -59,9 +61,15 @@ namespace com::gelunox::vulcanUtils
 
 		const vector<Vertex> vertices =
 		{
-			{ {  0.0f, -0.9f },{ 1.0f, 0.0f, 0.0f } },
-			{ {  0.9f,  0.9f },{ 0.0f, 1.0f, 0.0f } },
-			{ { -0.9f,  0.9f },{ 0.0f, 0.0f, 1.0f } }
+			{ { -0.8f, -0.8f },{ 1.0f, 0.0f, 0.0f } },
+			{ {  0.8f, -0.8f },{ 0.0f, 1.0f, 0.0f } },
+			{ {  0.8f,  0.8f },{ 0.0f, 0.0f, 1.0f } },
+			{ { -0.8f,  0.8f },{ 0.5f, 0.0f, 0.5f } }
+		};
+		const vector<uint16_t> indices =
+		{
+			0, 1, 2,
+			2, 3, 0
 		};
 
 	public:
@@ -83,14 +91,15 @@ namespace com::gelunox::vulcanUtils
 
 		void recreateSwapchain();
 
-		void buildCommandpool();
+		void createCommandpool();
 
-		void createVertexBuffers();
+		void createBuffers();
+		void createMemory( VkDeviceSize size, const void * srcData, VkBuffer& dstBuffer, VkDeviceMemory& dstMemory );
 		void createBuffer( VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags property, VkBuffer &buffer, VkDeviceMemory &memory );
 		void copyBuffer( VkBuffer src, VkBuffer dst, VkDeviceSize size );
 
-		void buildCommandbuffers();
-		void buildSemaphores();
+		void createCommandbuffers();
+		void createSemaphores();
 
 		void drawFrame();
 	};

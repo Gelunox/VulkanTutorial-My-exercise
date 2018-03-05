@@ -2,35 +2,38 @@
 
 //https://vulkan-tutorial.com/Vertex_buffers/Vertex_buffer_creation
 //https://vulkan-tutorial.com/Vertex_buffers/Staging_buffer
+//https://vulkan-tutorial.com/Vertex_buffers/Index_buffer
 
 using namespace com::gelunox::vulcanUtils;
 using namespace std;
 
-void VulkanWindow::createVertexBuffers()
+void VulkanWindow::createBuffers()
 {
-	VkDeviceSize bufferSize = sizeof( vertices[0] ) * vertices.size();
+	createMemory( sizeof( vertices[0] ) * vertices.size(), vertices.data(), vertexBuffer, vertexMemory );
+	createMemory( sizeof(  indices[0] ) *  indices.size(),  indices.data(),  indexBuffer , indexMemory );
+}
 
+void VulkanWindow::createMemory( VkDeviceSize size, void const* srcData, VkBuffer& dstBuffer, VkDeviceMemory& dstMemory )
+{
 	VkBuffer stagingBuffer;
 	VkDeviceMemory stagingMemory;
 
-	//staging buffer
-	createBuffer( bufferSize,
+	createBuffer( size,
 		VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
 		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
 		stagingBuffer, stagingMemory );
 
 	void* data;
-	vkMapMemory( logicalDevice, stagingMemory, 0, bufferSize, 0, &data );
-	memcpy( data, vertices.data(), (size_t)bufferSize );
+	vkMapMemory( logicalDevice, stagingMemory, 0, size, 0, &data );
+	memcpy( data, srcData, (size_t)size );
 	vkUnmapMemory( logicalDevice, stagingMemory );
 
-	//vertex buffer
-	createBuffer( bufferSize,
+	createBuffer( size,
 		VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
 		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-		vertexBuffer, vertexBufferMemory );
+		dstBuffer, dstMemory );
 
-	copyBuffer( stagingBuffer, vertexBuffer, bufferSize );
+	copyBuffer( stagingBuffer, dstBuffer, size );
 
 	vkDestroyBuffer( logicalDevice, stagingBuffer, nullptr );
 	vkFreeMemory( logicalDevice, stagingMemory, nullptr );

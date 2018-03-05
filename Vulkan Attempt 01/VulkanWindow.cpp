@@ -138,12 +138,12 @@ VulkanWindow::VulkanWindow()
 
 	swapchain = new Swapchain( width, height, physicalDevice, logicalDevice, surface, queueIndices );
 
-	buildCommandpool();
+	createCommandpool();
 
-	createVertexBuffers();
+	createBuffers();
 
-	buildCommandbuffers();
-	buildSemaphores();
+	createCommandbuffers();
+	createSemaphores();
 }
 
 VulkanWindow::~VulkanWindow()
@@ -157,8 +157,10 @@ VulkanWindow::~VulkanWindow()
 
 	delete swapchain;
 
+	vkDestroyBuffer( logicalDevice, indexBuffer, nullptr );
+	vkFreeMemory( logicalDevice, indexMemory, nullptr );
 	vkDestroyBuffer( logicalDevice, vertexBuffer, nullptr );
-	vkFreeMemory( logicalDevice, vertexBufferMemory, nullptr );
+	vkFreeMemory( logicalDevice, vertexMemory, nullptr );
 
 	vkDestroyDevice( logicalDevice, nullptr );
 	vkDestroySurfaceKHR( instance, surface, nullptr );
@@ -254,6 +256,6 @@ void VulkanWindow::recreateSwapchain()
 	vkDeviceWaitIdle( logicalDevice );
 	swapchain = new Swapchain( width, height, physicalDevice, logicalDevice, surface, queueIndices, old );
 	vkFreeCommandBuffers( logicalDevice, commandpool, static_cast<uint32_t>(commandBuffers.size()), commandBuffers.data() );
-	buildCommandbuffers();
+	createCommandbuffers();
 	delete old;
 }

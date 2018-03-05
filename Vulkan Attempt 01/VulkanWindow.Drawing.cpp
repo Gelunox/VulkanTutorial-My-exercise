@@ -7,7 +7,7 @@
 using namespace com::gelunox::vulcanUtils;
 using namespace std;
 
-void VulkanWindow::buildCommandpool()
+void VulkanWindow::createCommandpool()
 {
 	VkCommandPoolCreateInfo poolInfo = {};
 	poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
@@ -20,7 +20,7 @@ void VulkanWindow::buildCommandpool()
 	}
 }
 
-void VulkanWindow::buildCommandbuffers()
+void VulkanWindow::createCommandbuffers()
 {
 	auto framebuffers = swapchain->getFrameBuffers();
 	commandBuffers.resize( framebuffers.size() );
@@ -61,8 +61,9 @@ void VulkanWindow::buildCommandbuffers()
 		VkBuffer vertexBuffers[] = { vertexBuffer };
 		VkDeviceSize  offsets[] = { 0 };
 		vkCmdBindVertexBuffers( commandBuffers[i], 0, 1, vertexBuffers, offsets );
+		vkCmdBindIndexBuffer( commandBuffers[i], indexBuffer, 0, VK_INDEX_TYPE_UINT16 );
 
-		vkCmdDraw( commandBuffers[i], static_cast<uint32_t>(vertices.size()), 1, 0, 0 );
+		vkCmdDrawIndexed( commandBuffers[i], static_cast<uint32_t>(indices.size()), 1, 0, 0, 0 );
 		vkCmdEndRenderPass( commandBuffers[i] );
 
 		if (vkEndCommandBuffer( commandBuffers[i] ) != VK_SUCCESS)
@@ -72,7 +73,7 @@ void VulkanWindow::buildCommandbuffers()
 	}
 }
 
-void VulkanWindow::buildSemaphores()
+void VulkanWindow::createSemaphores()
 {
 	VkSemaphoreCreateInfo spInfo = {};
 	spInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
