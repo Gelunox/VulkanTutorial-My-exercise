@@ -3,25 +3,33 @@
 #define GLFW_INCLUDE_VULKAN
 #define VK_USE_PLATFORM_WIN32_KHR
 
+#include <chrono>
+
 #include <GLFW/glfw3.h>
 #include <vector>
 #include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include "util.hpp"
 #include "Vertex.hpp"
+#include "UniformBufferObject.hpp"
 #include "QueueIndices.hpp"
 #include "Swapchain.hpp"
 
 using namespace std;
 
+
 namespace com::gelunox::vulcanUtils
 {
+	typedef chrono::time_point<chrono::steady_clock> timepoint;
+
 	class VulkanWindow
 	{
 	private:
 		int width = 500;
 		int height = 500;
+		timepoint startTime = chrono::high_resolution_clock::now();
 
 		const vector<const char*> validationLayers =
 		{
@@ -47,10 +55,17 @@ namespace com::gelunox::vulcanUtils
 
 		Swapchain * swapchain;
 
+		//it would better to have a single buffer with offsets
 		VkBuffer vertexBuffer;
 		VkDeviceMemory vertexMemory;
 		VkBuffer indexBuffer;
 		VkDeviceMemory indexMemory;
+		VkBuffer uniformBuffer;
+		VkDeviceMemory uniformMemory;
+
+		VkDescriptorPool descriptorPool;
+		VkDescriptorSetLayout descriptorSetLayout;
+		VkDescriptorSet descriptorSet;
 
 		VkCommandPool commandpool;
 		vector<VkCommandBuffer> commandBuffers;
@@ -98,9 +113,14 @@ namespace com::gelunox::vulcanUtils
 		void createBuffer( VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags property, VkBuffer &buffer, VkDeviceMemory &memory );
 		void copyBuffer( VkBuffer src, VkBuffer dst, VkDeviceSize size );
 
+		void createDescriptorSetLayout();
+		void createDescriptorPool();
+		void createDescriptorSet();
+
 		void createCommandbuffers();
 		void createSemaphores();
 
+		void update();
 		void drawFrame();
 	};
 }

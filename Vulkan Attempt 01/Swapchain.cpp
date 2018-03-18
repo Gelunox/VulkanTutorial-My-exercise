@@ -3,13 +3,15 @@
 using namespace com::gelunox::vulcanUtils;
 using namespace std;
 
-Swapchain::Swapchain( int width, int height, VkPhysicalDevice physicalDevice, VkDevice device, VkSurfaceKHR surface, QueueIndices queueIndices )
-	:Swapchain(width, height, physicalDevice, device, surface, queueIndices, nullptr)
+Swapchain::Swapchain( int width, int height, VkPhysicalDevice physicalDevice, VkDevice device,
+	VkSurfaceKHR surface, QueueIndices queueIndices, VkDescriptorSetLayout descriptorLayout )
+	:Swapchain(width, height, physicalDevice, device, surface, queueIndices, descriptorLayout, nullptr)
 {
 
 }
 
-Swapchain::Swapchain( int width, int height, VkPhysicalDevice physicalDevice, VkDevice device, VkSurfaceKHR surface, QueueIndices queueIndices, Swapchain * oldSwapchain )
+Swapchain::Swapchain( int width, int height, VkPhysicalDevice physicalDevice, VkDevice device,
+	VkSurfaceKHR surface, QueueIndices queueIndices, VkDescriptorSetLayout descriptorLayout, Swapchain * oldSwapchain )
 	: device( device ), width( width ), height( height )
 {
 	if (oldSwapchain)
@@ -22,7 +24,7 @@ Swapchain::Swapchain( int width, int height, VkPhysicalDevice physicalDevice, Vk
 	}
 	createImages( device );
 
-	pipeline = new Pipeline( device, extent, imageFormat );
+	pipeline = new GraphicsPipeline( device, extent, imageFormat, descriptorLayout );
 
 	createFrameBuffers();
 }

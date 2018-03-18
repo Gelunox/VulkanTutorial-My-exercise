@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "QueueIndices.hpp"
-#include "Pipeline.hpp"
+#include "GraphicsPipeline.hpp"
 
 using namespace std;
 
@@ -16,7 +16,7 @@ namespace com::gelunox::vulcanUtils
 		const int width;
 		const int height;
 
-		Pipeline * pipeline;
+		GraphicsPipeline * pipeline;
 
 		const VkDevice device;
 
@@ -30,12 +30,14 @@ namespace com::gelunox::vulcanUtils
 		vector<VkFramebuffer> frameBuffers;
 
 	public:
-		Swapchain( int width, int height, VkPhysicalDevice physicalDevice, VkDevice device, VkSurfaceKHR surface, QueueIndices queueIndices );
-		Swapchain( int width, int height, VkPhysicalDevice physicalDevice, VkDevice device, VkSurfaceKHR surface, QueueIndices queueIndices, Swapchain * oldSwapchain );
+		Swapchain( int width, int height, VkPhysicalDevice physicalDevice, VkDevice device,
+			VkSurfaceKHR surface, QueueIndices queueIndices, VkDescriptorSetLayout descriptorLayout );
+		Swapchain( int width, int height, VkPhysicalDevice physicalDevice, VkDevice device,
+			VkSurfaceKHR surface, QueueIndices queueIndices, VkDescriptorSetLayout descriptorLayout, Swapchain * oldSwapchain );
 		~Swapchain();
 
 		VkSwapchainKHR getSwapchain() { return swapchain; }
-		Pipeline * getPipeline() { return pipeline; }
+		GraphicsPipeline * getPipeline() { return pipeline; }
 
 		VkExtent2D getExtent() { return extent; }
 		VkFormat getImageFormat() { return imageFormat; }

@@ -9,7 +9,6 @@
 #include <glm/mat4x4.hpp>
 
 #include <thread>
-#include <chrono>
 #include <set>
 #include <algorithm>
 #include <iostream>
@@ -136,11 +135,16 @@ VulkanWindow::VulkanWindow()
 	findQFamilyIndexes();
 	createLogicalDevice();
 
-	swapchain = new Swapchain( width, height, physicalDevice, logicalDevice, surface, queueIndices );
+	createDescriptorSetLayout();
+
+	swapchain = new Swapchain( width, height, physicalDevice, logicalDevice, surface, queueIndices, descriptorSetLayout );
 
 	createCommandpool();
-
 	createBuffers();
+
+	createDescriptorPool();
+	createDescriptorSet();
+	createCommandpool();
 
 	createCommandbuffers();
 	createSemaphores();
@@ -155,12 +159,20 @@ VulkanWindow::~VulkanWindow()
 
 	vkDestroyCommandPool( logicalDevice, commandpool, nullptr );
 
+
+	vkDestroyDescriptorSetLayout( logicalDevice, descriptorSetLayout, nullptr );
+	vkDestroyDescriptorPool( logicalDevice, descriptorPool, nullptr );
+
 	delete swapchain;
 
 	vkDestroyBuffer( logicalDevice, indexBuffer, nullptr );
 	vkFreeMemory( logicalDevice, indexMemory, nullptr );
+
 	vkDestroyBuffer( logicalDevice, vertexBuffer, nullptr );
 	vkFreeMemory( logicalDevice, vertexMemory, nullptr );
+
+	vkDestroyBuffer( logicalDevice, uniformBuffer, nullptr );
+	vkFreeMemory( logicalDevice, uniformMemory, nullptr );
 
 	vkDestroyDevice( logicalDevice, nullptr );
 	vkDestroySurfaceKHR( instance, surface, nullptr );
@@ -175,6 +187,7 @@ void VulkanWindow::run()
 	while (!glfwWindowShouldClose( window ))
 	{
 		glfwPollEvents();
+		update();
 		drawFrame();
 		this_thread::sleep_for( chrono::milliseconds( 33 ) );
 	}
@@ -254,7 +267,7 @@ void VulkanWindow::recreateSwapchain()
 	Swapchain * old = swapchain;
 
 	vkDeviceWaitIdle( logicalDevice );
-	swapchain = new Swapchain( width, height, physicalDevice, logicalDevice, surface, queueIndices, old );
+	swapchain = new Swapchain( width, height, physicalDevice, logicalDevice, surface, queueIndices, descriptorSetLayout, old );
 	vkFreeCommandBuffers( logicalDevice, commandpool, static_cast<uint32_t>(commandBuffers.size()), commandBuffers.data() );
 	createCommandbuffers();
 	delete old;

@@ -1,24 +1,23 @@
-#include "Pipeline.hpp"
+#include "GraphicsPipeline.hpp"
 
 using namespace std;
 using namespace com::gelunox::vulcanUtils;
 
 
-Pipeline::Pipeline( VkDevice device, VkExtent2D imageExtent, VkFormat imageFormat )
+GraphicsPipeline::GraphicsPipeline( VkDevice device, VkExtent2D imageExtent, VkFormat imageFormat, VkDescriptorSetLayout descriptorLayout )
 	:device(device)
 {
 	createRenderpass( imageFormat );
-	createPipeline( imageExtent );
+	createPipeline( imageExtent, descriptorLayout );
 }
 
-Pipeline::~Pipeline()
+GraphicsPipeline::~GraphicsPipeline()
 {
 	vkDestroyPipeline( device, graphics, nullptr );
 	vkDestroyPipelineLayout( device, layout, nullptr );
 	vkDestroyRenderPass( device, renderPass, nullptr );
 }
-
-void Pipeline::createRenderpass( VkFormat imageFormat )
+void GraphicsPipeline::createRenderpass( VkFormat imageFormat )
 {
 	VkAttachmentDescription colorAttachment = {};
 	colorAttachment.format = imageFormat;
@@ -62,7 +61,7 @@ void Pipeline::createRenderpass( VkFormat imageFormat )
 	}
 }
 
-void Pipeline::createPipeline( VkExtent2D imageExtent )
+void GraphicsPipeline::createPipeline( VkExtent2D imageExtent, VkDescriptorSetLayout descriptorLayout )
 {
 	//shaders
 	vector<char> vertShader = readFile( "shaders/vert.spv" );
@@ -130,7 +129,7 @@ void Pipeline::createPipeline( VkExtent2D imageExtent )
 	rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
 	rasterizer.lineWidth = 1.0f;
 	rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
-	rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE;
+	rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
 
 	rasterizer.depthBiasEnable = VK_FALSE;
 	//rasterizer.depthBiasConstantFactor = 0.0f;
@@ -180,8 +179,8 @@ void Pipeline::createPipeline( VkExtent2D imageExtent )
 	//pipeline layout
 	VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
 	pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-	pipelineLayoutInfo.setLayoutCount = 0;
-	pipelineLayoutInfo.pSetLayouts = nullptr;
+	pipelineLayoutInfo.setLayoutCount = 1;
+	pipelineLayoutInfo.pSetLayouts = &descriptorLayout;
 	pipelineLayoutInfo.pushConstantRangeCount = 0;
 	pipelineLayoutInfo.pPushConstantRanges = nullptr;
 
@@ -217,7 +216,7 @@ void Pipeline::createPipeline( VkExtent2D imageExtent )
 	vkDestroyShaderModule( device, fragShaderModule, nullptr );
 }
 
-VkShaderModule Pipeline::createShaderModule( VkDevice device, const vector<char>& code )
+VkShaderModule GraphicsPipeline::createShaderModule( VkDevice device, const vector<char>& code )
 {
 	VkShaderModuleCreateInfo createInfo = {};
 	createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;

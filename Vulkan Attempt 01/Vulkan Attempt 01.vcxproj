@@ -119,7 +119,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Pipeline.cpp" />
+    <ClCompile Include="GraphicsPipeline.cpp" />
     <ClCompile Include="Swapchain.cpp" />
     <ClCompile Include="VulkanWindow.MemoryBuffers.cpp" />
     <ClCompile Include="VulkanWindow.cpp" />
@@ -131,9 +131,10 @@
     <None Include="shaders\shader.vert" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Pipeline.hpp" />
+    <ClInclude Include="GraphicsPipeline.hpp" />
     <ClInclude Include="QueueIndices.hpp" />
     <ClInclude Include="Swapchain.hpp" />
+    <ClInclude Include="UniformBufferObject.hpp" />
     <ClInclude Include="util.hpp" />
     <ClInclude Include="Vertex.hpp" />
     <ClInclude Include="VulkanWindow.hpp" />

@@ -11,6 +11,12 @@ void VulkanWindow::createBuffers()
 {
 	createMemory( sizeof( vertices[0] ) * vertices.size(), vertices.data(), vertexBuffer, vertexMemory );
 	createMemory( sizeof(  indices[0] ) *  indices.size(),  indices.data(),  indexBuffer , indexMemory );
+
+	//uniformbuffer
+	createBuffer( sizeof( UniformBufferObject ),
+		VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+		uniformBuffer, uniformMemory );
 }
 
 void VulkanWindow::createMemory( VkDeviceSize size, void const* srcData, VkBuffer& dstBuffer, VkDeviceMemory& dstMemory )

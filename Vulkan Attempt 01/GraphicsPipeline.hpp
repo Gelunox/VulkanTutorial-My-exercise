@@ -12,26 +12,28 @@ namespace com::gelunox::vulcanUtils
 {
 	//class Swapchain;
 
-	class Pipeline
+	class GraphicsPipeline
 	{
 	private:
 		VkDevice device;
 
 		VkRenderPass renderPass;
-
+		
 		VkPipeline graphics;
 		VkPipelineLayout layout;
 
 	public:
-		Pipeline(VkDevice device, VkExtent2D imageExtent, VkFormat imageFormat);
-		~Pipeline();
+		GraphicsPipeline(VkDevice device, VkExtent2D imageExtent, VkFormat imageFormat, VkDescriptorSetLayout descriptorLayout);
+		~GraphicsPipeline();
+
 
 		VkRenderPass getRenderPass() { return renderPass; }
 		VkPipeline getPipeline() { return graphics; }
+		VkPipelineLayout getLayout() { return layout; }
 
 	private:
 		void createRenderpass( VkFormat imageFormat );
-		void createPipeline( VkExtent2D imageExtent );
+		void createPipeline( VkExtent2D imageExtent, VkDescriptorSetLayout descriptorLayout );
 
 		static VkShaderModule createShaderModule( VkDevice device, const vector<char>& code );
 	};
