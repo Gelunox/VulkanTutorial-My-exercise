@@ -118,26 +118,32 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="GraphicsPipeline.cpp" />
-    <ClCompile Include="Swapchain.cpp" />
-    <ClCompile Include="VulkanWindow.MemoryBuffers.cpp" />
-    <ClCompile Include="VulkanWindow.cpp" />
-    <ClCompile Include="VulkanWindow.DeviceSelection.cpp" />
-    <ClCompile Include="VulkanWindow.Drawing.cpp" />
+    <ClCompile Include="src\builder\PipelineLayoutBuilder.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\GraphicsPipeline.cpp" />
+    <ClCompile Include="src\builder\RenderPassBuilder.cpp" />
+    <ClCompile Include="src\builder\PipelineBuilder.cpp" />
+    <ClCompile Include="src\Swapchain.cpp" />
+    <ClCompile Include="src\VulkanWindow.MemoryBuffers.cpp" />
+    <ClCompile Include="src\VulkanWindow.cpp" />
+    <ClCompile Include="src\VulkanWindow.DeviceSelection.cpp" />
+    <ClCompile Include="src\VulkanWindow.Drawing.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\shader.frag" />
     <None Include="shaders\shader.vert" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GraphicsPipeline.hpp" />
-    <ClInclude Include="QueueIndices.hpp" />
-    <ClInclude Include="Swapchain.hpp" />
-    <ClInclude Include="UniformBufferObject.hpp" />
-    <ClInclude Include="util.hpp" />
-    <ClInclude Include="Vertex.hpp" />
-    <ClInclude Include="VulkanWindow.hpp" />
+    <ClInclude Include="src\builder\PipelineLayoutBuilder.hpp" />
+    <ClInclude Include="src\GraphicsPipeline.hpp" />
+    <ClInclude Include="src\builder\PipelineBuilder.hpp" />
+    <ClInclude Include="src\QueueIndices.hpp" />
+    <ClInclude Include="src\builder\RenderPassBuilder.hpp" />
+    <ClInclude Include="src\Swapchain.hpp" />
+    <ClInclude Include="src\UniformBufferObject.hpp" />
+    <ClInclude Include="src\util.hpp" />
+    <ClInclude Include="src\Vertex.hpp" />
+    <ClInclude Include="src\VulkanWindow.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

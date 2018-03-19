@@ -189,7 +189,7 @@ void VulkanWindow::run()
 		glfwPollEvents();
 		update();
 		drawFrame();
-		this_thread::sleep_for( chrono::milliseconds( 33 ) );
+		this_thread::sleep_for( chrono::milliseconds( 10 ) );
 	}
 }
 

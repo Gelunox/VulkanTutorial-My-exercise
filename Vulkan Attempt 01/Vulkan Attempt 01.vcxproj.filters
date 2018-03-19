@@ -15,25 +15,34 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="src\builder\PipelineBuilder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="VulkanWindow.cpp">
+    <ClCompile Include="src\builder\RenderPassBuilder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="VulkanWindow.DeviceSelection.cpp">
+    <ClCompile Include="src\GraphicsPipeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="VulkanWindow.Drawing.cpp">
+    <ClCompile Include="src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Swapchain.cpp">
+    <ClCompile Include="src\Swapchain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="VulkanWindow.MemoryBuffers.cpp">
+    <ClCompile Include="src\VulkanWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GraphicsPipeline.cpp">
+    <ClCompile Include="src\VulkanWindow.DeviceSelection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\VulkanWindow.Drawing.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\VulkanWindow.MemoryBuffers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\builder\PipelineLayoutBuilder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -42,25 +51,34 @@
     <None Include="shaders\shader.vert" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="VulkanWindow.hpp">
+    <ClInclude Include="src\builder\PipelineBuilder.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Swapchain.hpp">
+    <ClInclude Include="src\builder\RenderPassBuilder.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="QueueIndices.hpp">
+    <ClInclude Include="src\GraphicsPipeline.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="util.hpp">
+    <ClInclude Include="src\QueueIndices.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Vertex.hpp">
+    <ClInclude Include="src\Swapchain.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="UniformBufferObject.hpp">
+    <ClInclude Include="src\UniformBufferObject.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GraphicsPipeline.hpp">
+    <ClInclude Include="src\util.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vertex.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\VulkanWindow.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\builder\PipelineLayoutBuilder.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
