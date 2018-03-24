@@ -6,6 +6,10 @@
 #include "QueueIndices.hpp"
 #include "GraphicsPipeline.hpp"
 
+#include "builder/SwapchainBuilder.hpp"
+#include "builder/ImageViewBuilder.hpp"
+#include "builder/FramebufferBuilder.hpp"
+
 using namespace std;
 
 namespace com::gelunox::vulcanUtils

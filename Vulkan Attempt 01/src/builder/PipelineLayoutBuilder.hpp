@@ -20,7 +20,6 @@ namespace com::gelunox::vulcanUtils
 		vector<VkDescriptorSetLayout> descriptorSetLayouts;
 	public:
 		PipelineLayoutBuilder(VkDevice & device);
-		~PipelineLayoutBuilder();
 
 		This addDescriptorSetLayout( VkDescriptorSetLayout & layout );
 

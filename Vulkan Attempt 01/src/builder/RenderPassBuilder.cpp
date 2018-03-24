@@ -40,10 +40,6 @@ RenderPassBuilder::RenderPassBuilder( VkDevice device ) :device( device )
 	renderPassInfo.pDependencies = &dependency;
 }
 
-RenderPassBuilder::~RenderPassBuilder()
-{
-}
-
 This RenderPassBuilder::setImageFormat( VkFormat& imageFormat )
 {
 	colorAttachment.format = imageFormat;

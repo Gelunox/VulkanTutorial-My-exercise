@@ -15,10 +15,6 @@ PipelineLayoutBuilder::PipelineLayoutBuilder( VkDevice & device) : device(device
 	pipelineLayoutInfo.pPushConstantRanges = nullptr;
 }
 
-PipelineLayoutBuilder::~PipelineLayoutBuilder()
-{
-}
-
 This PipelineLayoutBuilder::addDescriptorSetLayout( VkDescriptorSetLayout & layout )
 {
 	descriptorSetLayouts.push_back( layout );

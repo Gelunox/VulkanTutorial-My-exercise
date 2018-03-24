@@ -118,6 +118,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\builder\FramebufferBuilder.cpp" />
+    <ClCompile Include="src\builder\ImageViewBuilder.cpp" />
     <ClCompile Include="src\builder\PipelineLayoutBuilder.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\GraphicsPipeline.cpp" />
@@ -128,12 +130,15 @@
     <ClCompile Include="src\VulkanWindow.cpp" />
     <ClCompile Include="src\VulkanWindow.DeviceSelection.cpp" />
     <ClCompile Include="src\VulkanWindow.Drawing.cpp" />
+    <ClCompile Include="src\builder\SwapchainBuilder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\shader.frag" />
     <None Include="shaders\shader.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\builder\FramebufferBuilder.hpp" />
+    <ClInclude Include="src\builder\ImageViewBuilder.hpp" />
     <ClInclude Include="src\builder\PipelineLayoutBuilder.hpp" />
     <ClInclude Include="src\GraphicsPipeline.hpp" />
     <ClInclude Include="src\builder\PipelineBuilder.hpp" />
@@ -144,6 +149,7 @@
     <ClInclude Include="src\util.hpp" />
     <ClInclude Include="src\Vertex.hpp" />
     <ClInclude Include="src\VulkanWindow.hpp" />
+    <ClInclude Include="src\builder\SwapchainBuilder.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

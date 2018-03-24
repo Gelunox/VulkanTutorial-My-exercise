@@ -9,17 +9,15 @@ namespace com::gelunox::vulcanUtils
 		typedef RenderPassBuilder & This;
 
 	private:
-
-		VkDevice device;
 		VkAttachmentDescription colorAttachment = {};
 		VkAttachmentReference colorAttachmentReference = {};
 		VkSubpassDescription subpass = {};
 		VkSubpassDependency dependency = {};
 		VkRenderPassCreateInfo renderPassInfo = {};
 
+		VkDevice device;
 	public:
 		RenderPassBuilder( VkDevice device );
-		~RenderPassBuilder();
 
 		This setImageFormat( VkFormat& imageFormat );
 
