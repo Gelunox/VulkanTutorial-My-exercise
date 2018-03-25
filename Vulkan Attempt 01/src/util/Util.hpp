@@ -11,15 +11,6 @@ using namespace std;
 
 namespace com::gelunox::vulcanUtils::Util
 {
-	inline void println( const string& str ... )
-	{
-		cout << str << endl;
-	}
-	inline void errln( const std::string& str ... )
-	{
-		cerr << str << endl;
-	}
-
 	vector<char> readFile( const string& filename );
 
 	uint32_t findMemoryType( VkPhysicalDevice& device, uint32_t typeFilter, VkMemoryPropertyFlags properties );
