@@ -22,7 +22,6 @@
 
 using namespace std;
 
-
 namespace com::gelunox::vulcanUtils
 {
 	typedef chrono::time_point<chrono::steady_clock> timepoint;

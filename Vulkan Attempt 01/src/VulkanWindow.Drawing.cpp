@@ -44,13 +44,13 @@ void VulkanWindow::createCommandbuffers()
 		beginInfo.pInheritanceInfo = nullptr;
 
 		vkBeginCommandBuffer( commandBuffers[i], &beginInfo );
-		vkCmdBindDescriptorSets( commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, swapchain->getPipeline()->getLayout(),
+		vkCmdBindDescriptorSets( commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, swapchain->getPipelineLayout(),
 			0, 1, &descriptorSet, 0, nullptr);
 
 		VkClearValue clearColor = { .0f, .0f, 0.0f, 1.0f };
 		VkRenderPassBeginInfo renderpassInfo = {};
 		renderpassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-		renderpassInfo.renderPass = swapchain->getPipeline()->getRenderPass();
+		renderpassInfo.renderPass = swapchain->getRenderPass();
 		renderpassInfo.framebuffer = framebuffers[i];
 		renderpassInfo.renderArea.offset = { 0,0 };
 		renderpassInfo.renderArea.extent = swapchain->getExtent();
@@ -58,7 +58,7 @@ void VulkanWindow::createCommandbuffers()
 		renderpassInfo.pClearValues = &clearColor;
 
 		vkCmdBeginRenderPass( commandBuffers[i], &renderpassInfo, VK_SUBPASS_CONTENTS_INLINE );
-		vkCmdBindPipeline( commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, swapchain->getPipeline()->getPipeline() );
+		vkCmdBindPipeline( commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, swapchain->getPipeline() );
 
 		VkBuffer vertexBuffers[] = { vertexBuffer };
 		VkDeviceSize  offsets[] = { 0 };

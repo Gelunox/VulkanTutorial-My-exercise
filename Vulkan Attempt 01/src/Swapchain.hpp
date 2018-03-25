@@ -4,12 +4,16 @@
 #include <vector>
 
 #include "QueueIndices.hpp"
-#include "GraphicsPipeline.hpp"
 #include "util/Util.hpp"
+#include "Vertex.hpp"
 
 #include "builder/SwapchainBuilder.hpp"
 #include "builder/ImageViewBuilder.hpp"
 #include "builder/FramebufferBuilder.hpp"
+#include "builder/RenderPassBuilder.hpp"
+#include "builder/PipelineBuilder.hpp"
+#include "builder/PipelineLayoutBuilder.hpp"
+
 
 using namespace std;
 
@@ -21,9 +25,7 @@ namespace com::gelunox::vulcanUtils
 		const int width;
 		const int height;
 
-		GraphicsPipeline * pipeline;
-
-		const VkDevice device;
+		VkDevice device;
 
 		VkSwapchainKHR swapchain;
 
@@ -32,6 +34,11 @@ namespace com::gelunox::vulcanUtils
 
 		vector<VkImage> images;
 		vector<VkImageView> imageViews;
+
+		VkRenderPass renderPass;
+		VkPipeline graphics;
+		VkPipelineLayout layout;
+
 		vector<VkFramebuffer> frameBuffers;
 
 	public:
@@ -42,17 +49,21 @@ namespace com::gelunox::vulcanUtils
 		~Swapchain();
 
 		VkSwapchainKHR getSwapchain() { return swapchain; }
-		GraphicsPipeline * getPipeline() { return pipeline; }
 
 		VkExtent2D getExtent() { return extent; }
 		VkFormat getImageFormat() { return imageFormat; }
 		vector<VkImage> getImages() { return images; }
 		vector<VkImageView> getImageViews() { return imageViews; }
+		VkRenderPass getRenderPass() { return renderPass; }
+		VkPipeline getPipeline() { return graphics; }
+		VkPipelineLayout getPipelineLayout() { return layout; }
 		vector<VkFramebuffer> getFrameBuffers() { return frameBuffers; }
 
 	private:
 		void createSwapchain( VkPhysicalDevice physicalDevice, VkDevice device, VkSurfaceKHR surface, QueueIndices queueIndices, VkSwapchainKHR oldSwapchain );
-		void createImages( VkDevice device );
+		void createImages();
+		void createRenderpass( VkFormat imageFormat );
+		void createPipeline( VkDescriptorSetLayout descriptorLayout );
 		void createFrameBuffers();
 	};
 }

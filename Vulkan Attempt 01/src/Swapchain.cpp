@@ -14,24 +14,20 @@ Swapchain::Swapchain( int width, int height, VkPhysicalDevice physicalDevice, Vk
 	VkSurfaceKHR surface, QueueIndices queueIndices, VkDescriptorSetLayout descriptorLayout, Swapchain * oldSwapchain )
 	: device( device ), width( width ), height( height )
 {
-	if (oldSwapchain)
-	{
-		createSwapchain( physicalDevice, device, surface, queueIndices, oldSwapchain->getSwapchain() );
-	}
-	else
-	{
-		createSwapchain( physicalDevice, device, surface, queueIndices, VK_NULL_HANDLE );
-	}
-	createImages( device );
-
-	pipeline = new GraphicsPipeline( device, extent, imageFormat, descriptorLayout );
+	createSwapchain( physicalDevice, device, surface, queueIndices, oldSwapchain ? oldSwapchain->getSwapchain() : VK_NULL_HANDLE );
+	createImages();
+	
+	createRenderpass( imageFormat );
+	createPipeline( descriptorLayout );
 
 	createFrameBuffers();
 }
 
 Swapchain::~Swapchain()
 {
-	delete pipeline;
+	vkDestroyPipeline( device, graphics, nullptr );
+	vkDestroyPipelineLayout( device, layout, nullptr );
+	vkDestroyRenderPass( device, renderPass, nullptr );
 
 	for (VkFramebuffer framebuff : frameBuffers)
 	{
@@ -77,7 +73,7 @@ void Swapchain::createSwapchain( VkPhysicalDevice physicalDevice, VkDevice devic
 	vkGetSwapchainImagesKHR( device, swapchain, &imageCount, images.data() );
 }
 
-void Swapchain::createImages( VkDevice device )
+void Swapchain::createImages()
 {
 	imageViews.resize( images.size() );
 
@@ -90,11 +86,35 @@ void Swapchain::createImages( VkDevice device )
 	}
 }
 
+void Swapchain::createRenderpass( VkFormat imageFormat )
+{
+	renderPass = RenderPassBuilder( device )
+		.setImageFormat( imageFormat )
+		.build();
+}
+
+void Swapchain::createPipeline( VkDescriptorSetLayout descriptorLayout )
+{
+	//shaders
+	vector<char> vertShader = Util::readFile( "shaders/vert.spv" );
+	vector<char> fragShader = Util::readFile( "shaders/frag.spv" );
+
+	layout = PipelineLayoutBuilder( device )
+		.addDescriptorSetLayout( descriptorLayout )
+		.build();
+
+	graphics = PipelineBuilder( device )
+		.addShaderStage( vertShader, "main", VK_SHADER_STAGE_VERTEX_BIT )
+		.addShaderStage( fragShader, "main", VK_SHADER_STAGE_FRAGMENT_BIT )
+		.setImageExtent( extent )
+		.setRenderPass( renderPass )
+		.setPipelineLayout( layout )
+		.build();
+}
+
 void Swapchain::createFrameBuffers()
 {
 	frameBuffers.resize( imageViews.size() );
-
-	VkRenderPass renderPass = pipeline->getRenderPass();
 
 	for (size_t i = 0; i < imageViews.size(); i++)
 	{

@@ -90,13 +90,12 @@ VulkanWindow::VulkanWindow()
 	uint32_t glfwExtensionCount = 0;
 	const char** glfwExtensions;
 	glfwExtensions = glfwGetRequiredInstanceExtensions( &glfwExtensionCount );
-	std::vector<const char*> extensions( glfwExtensions, glfwExtensions + glfwExtensionCount );
 
 	//Vulkan init
 	InstanceBuilder builder = InstanceBuilder()
 		.setApplicationName( "Hello Triangle" )
 		.setEngineName( "White Dragon" )
-		.addExtensions( extensions )
+		.addExtensions( vector<const char*>( glfwExtensions, glfwExtensions + glfwExtensionCount ) )
 		.setValidationLayersEnabled( enableValidationLayers );
 
 	if (enableValidationLayers)
