@@ -9,8 +9,8 @@ using namespace std;
 
 void VulkanWindow::createBuffers()
 {
-	createMemory( sizeof( vertices[0] ) * vertices.size(), vertices.data(), vertexBuffer, vertexMemory );
-	createMemory( sizeof(  indices[0] ) *  indices.size(),  indices.data(),  indexBuffer , indexMemory );
+	createMemory( sizeof( vertices[0] ) * vertices.size(), vertices.data(), vertexBuffer, vertexMemory, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT );
+	createMemory( sizeof(  indices[0] ) *  indices.size(),  indices.data(),  indexBuffer , indexMemory, VK_BUFFER_USAGE_INDEX_BUFFER_BIT );
 
 	//uniformbuffer
 	createBuffer( sizeof( UniformBufferObject ),
@@ -19,7 +19,7 @@ void VulkanWindow::createBuffers()
 		uniformBuffer, uniformMemory );
 }
 
-void VulkanWindow::createMemory( VkDeviceSize size, void const* srcData, VkBuffer& dstBuffer, VkDeviceMemory& dstMemory )
+void VulkanWindow::createMemory( VkDeviceSize size, void const* srcData, VkBuffer& dstBuffer, VkDeviceMemory& dstMemory, VkBufferUsageFlagBits flags )
 {
 	VkBuffer stagingBuffer;
 	VkDeviceMemory stagingMemory;
@@ -35,7 +35,7 @@ void VulkanWindow::createMemory( VkDeviceSize size, void const* srcData, VkBuffe
 	vkUnmapMemory( logicalDevice, stagingMemory );
 
 	createBuffer( size,
-		VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+		VK_BUFFER_USAGE_TRANSFER_DST_BIT | flags,
 		VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
 		dstBuffer, dstMemory );
 

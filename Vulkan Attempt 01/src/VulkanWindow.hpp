@@ -17,6 +17,9 @@
 #include "QueueIndices.hpp"
 #include "Swapchain.hpp"
 
+#include "builder/InstanceBuilder.hpp"
+#include "builder/LogicalDeviceBuilder.hpp"
+
 using namespace std;
 
 
@@ -31,10 +34,6 @@ namespace com::gelunox::vulcanUtils
 		int height = 500;
 		timepoint startTime = chrono::high_resolution_clock::now();
 
-		const vector<const char*> validationLayers =
-		{
-			"VK_LAYER_LUNARG_standard_validation"
-		};
 		const bool enableValidationLayers = true;
 		VkDebugReportCallbackEXT callback;
 
@@ -108,7 +107,7 @@ namespace com::gelunox::vulcanUtils
 		void createCommandpool();
 
 		void createBuffers();
-		void createMemory( VkDeviceSize size, const void * srcData, VkBuffer& dstBuffer, VkDeviceMemory& dstMemory );
+		void createMemory( VkDeviceSize size, const void * srcData, VkBuffer& dstBuffer, VkDeviceMemory& dstMemory, VkBufferUsageFlagBits flags );
 		void createBuffer( VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags property, VkBuffer &buffer, VkDeviceMemory &memory );
 		void copyBuffer( VkBuffer src, VkBuffer dst, VkDeviceSize size );
 

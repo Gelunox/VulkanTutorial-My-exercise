@@ -50,9 +50,11 @@ void VulkanWindow::selectPhysicalDevice()
 void VulkanWindow::createLogicalDevice()
 {
 	//Logical device creation
-	float queuePriority = 1.0f;
-	vector<VkDeviceQueueCreateInfo> queueCreateInfos;
+	LogicalDeviceBuilder builder = LogicalDeviceBuilder( physicalDevice )
+		.addExtensions( deviceExtensions )
+		.setValidationLayersEnabled(enableValidationLayers);
 
+	float queuePriority = 1.0f;
 	auto indices = queueIndices.asList();
 
 	for (auto index : indices)
@@ -63,33 +65,10 @@ void VulkanWindow::createLogicalDevice()
 		queueInfo.queueCount = 1;
 		queueInfo.pQueuePriorities = &queuePriority;
 
-		queueCreateInfos.push_back( queueInfo );
+		builder.addQueueInfo( queueInfo );
 	}
 
-	//used device features
-	VkPhysicalDeviceFeatures deviceFeatures = {};
-
-	VkDeviceCreateInfo deviceCreateInfo = {};
-	deviceCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-	deviceCreateInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
-	deviceCreateInfo.pQueueCreateInfos = queueCreateInfos.data();
-	deviceCreateInfo.pEnabledFeatures = &deviceFeatures;
-	deviceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size());
-	deviceCreateInfo.ppEnabledExtensionNames = deviceExtensions.data();
-	if (enableValidationLayers)
-	{
-		deviceCreateInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
-		deviceCreateInfo.ppEnabledLayerNames = validationLayers.data();
-	}
-	else
-	{
-		deviceCreateInfo.enabledLayerCount = 0;
-	}
-
-	if (VK_SUCCESS != vkCreateDevice( physicalDevice, &deviceCreateInfo, nullptr, &logicalDevice ))
-	{
-		throw runtime_error( "cannot create logical device" );
-	}
+	logicalDevice = builder.build();
 
 	//retrieve queue handle
 	vkGetDeviceQueue( logicalDevice, queueIndices.graphics, 0, &graphicsQ );

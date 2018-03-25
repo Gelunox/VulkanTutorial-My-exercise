@@ -77,6 +77,7 @@ bool VulkanWindow::isSuitableGpu( VkPhysicalDevice device )
 //https://vulkan-tutorial.com/Drawing_a_triangle/Setup/Instance
 VulkanWindow::VulkanWindow()
 {
+
 	//GLFW init
 	glfwInit();
 
@@ -90,40 +91,20 @@ VulkanWindow::VulkanWindow()
 	const char** glfwExtensions;
 	glfwExtensions = glfwGetRequiredInstanceExtensions( &glfwExtensionCount );
 	std::vector<const char*> extensions( glfwExtensions, glfwExtensions + glfwExtensionCount );
-	if (enableValidationLayers)
-	{
-		extensions.push_back( VK_EXT_DEBUG_REPORT_EXTENSION_NAME );
-	}
-
 
 	//Vulkan init
-	VkApplicationInfo appInfo = {};
-	appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-	appInfo.pApplicationName = "Hello Triangle";
-	appInfo.applicationVersion = VK_MAKE_VERSION( 1, 0, 0 );
-	appInfo.pEngineName = "White Dragon";
-	appInfo.engineVersion = VK_MAKE_VERSION( 1, 0, 0 );
-	appInfo.apiVersion = VK_API_VERSION_1_0;
+	InstanceBuilder builder = InstanceBuilder()
+		.setApplicationName( "Hello Triangle" )
+		.setEngineName( "White Dragon" )
+		.addExtensions( extensions )
+		.setValidationLayersEnabled( enableValidationLayers );
 
-	VkInstanceCreateInfo createInfo = {};
-	createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-	createInfo.pApplicationInfo = &appInfo;
-	createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());;
-	createInfo.ppEnabledExtensionNames = extensions.data();
 	if (enableValidationLayers)
 	{
-		createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
-		createInfo.ppEnabledLayerNames = validationLayers.data();
-	}
-	else
-	{
-		createInfo.enabledLayerCount = 0;
+		builder.addExtension( VK_EXT_DEBUG_REPORT_EXTENSION_NAME );
 	}
 
-	if (vkCreateInstance( &createInfo, nullptr, &instance ) != VK_SUCCESS)
-	{
-		throw runtime_error( "can't create vulkan instance" );
-	}
+	instance = builder.build();
 
 	VkDebugReportCallbackCreateInfoEXT debugInfo = {};
 	debugInfo.sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
@@ -164,9 +145,6 @@ VulkanWindow::~VulkanWindow()
 	vkDestroySemaphore( logicalDevice, imageAvailableSemaphore, nullptr );
 	vkDestroySemaphore( logicalDevice, renderFinishedSemaphore, nullptr );
 
-	vkDestroyCommandPool( logicalDevice, commandpool, nullptr );
-
-
 	vkDestroyDescriptorSetLayout( logicalDevice, descriptorSetLayout, nullptr );
 	vkDestroyDescriptorPool( logicalDevice, descriptorPool, nullptr );
 
@@ -180,6 +158,8 @@ VulkanWindow::~VulkanWindow()
 
 	vkDestroyBuffer( logicalDevice, uniformBuffer, nullptr );
 	vkFreeMemory( logicalDevice, uniformMemory, nullptr );
+
+	vkDestroyCommandPool( logicalDevice, commandpool, nullptr );
 
 	vkDestroyDevice( logicalDevice, nullptr );
 	vkDestroySurfaceKHR( instance, surface, nullptr );

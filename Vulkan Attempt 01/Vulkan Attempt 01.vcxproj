@@ -118,6 +118,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\builder\InstanceBuilder.cpp" />
+    <ClCompile Include="src\builder\LogicalDeviceBuilder.cpp" />
     <ClCompile Include="src\builder\FramebufferBuilder.cpp" />
     <ClCompile Include="src\builder\ImageViewBuilder.cpp" />
     <ClCompile Include="src\builder\PipelineLayoutBuilder.cpp" />
@@ -138,6 +140,8 @@
     <None Include="shaders\shader.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\builder\InstanceBuilder.hpp" />
+    <ClInclude Include="src\builder\LogicalDeviceBuilder.hpp" />
     <ClInclude Include="src\builder\FramebufferBuilder.hpp" />
     <ClInclude Include="src\builder\ImageViewBuilder.hpp" />
     <ClInclude Include="src\builder\PipelineLayoutBuilder.hpp" />
@@ -147,6 +151,7 @@
     <ClInclude Include="src\builder\RenderPassBuilder.hpp" />
     <ClInclude Include="src\Swapchain.hpp" />
     <ClInclude Include="src\UniformBufferObject.hpp" />
+    <ClInclude Include="src\util\Globals.hpp" />
     <ClInclude Include="src\util\Util.hpp" />
     <ClInclude Include="src\Vertex.hpp" />
     <ClInclude Include="src\VulkanWindow.hpp" />
