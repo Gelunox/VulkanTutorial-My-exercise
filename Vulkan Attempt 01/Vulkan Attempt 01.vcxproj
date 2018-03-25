@@ -126,6 +126,7 @@
     <ClCompile Include="src\builder\RenderPassBuilder.cpp" />
     <ClCompile Include="src\builder\PipelineBuilder.cpp" />
     <ClCompile Include="src\Swapchain.cpp" />
+    <ClCompile Include="src\util\Util.cpp" />
     <ClCompile Include="src\VulkanWindow.MemoryBuffers.cpp" />
     <ClCompile Include="src\VulkanWindow.cpp" />
     <ClCompile Include="src\VulkanWindow.DeviceSelection.cpp" />
@@ -146,7 +147,7 @@
     <ClInclude Include="src\builder\RenderPassBuilder.hpp" />
     <ClInclude Include="src\Swapchain.hpp" />
     <ClInclude Include="src\UniformBufferObject.hpp" />
-    <ClInclude Include="src\util.hpp" />
+    <ClInclude Include="src\util\Util.hpp" />
     <ClInclude Include="src\Vertex.hpp" />
     <ClInclude Include="src\VulkanWindow.hpp" />
     <ClInclude Include="src\builder\SwapchainBuilder.hpp" />

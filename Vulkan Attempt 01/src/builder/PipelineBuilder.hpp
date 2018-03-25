@@ -2,7 +2,7 @@
 #include <vulkan/vulkan.h>
 #include <vector>
 
-#include "../util.hpp"
+#include "../util/Util.hpp"
 #include "../Vertex.hpp"
 
 using namespace std;

@@ -5,6 +5,7 @@
 
 #include "QueueIndices.hpp"
 #include "GraphicsPipeline.hpp"
+#include "util/Util.hpp"
 
 #include "builder/SwapchainBuilder.hpp"
 #include "builder/ImageViewBuilder.hpp"
@@ -53,10 +54,5 @@ namespace com::gelunox::vulcanUtils
 		void createSwapchain( VkPhysicalDevice physicalDevice, VkDevice device, VkSurfaceKHR surface, QueueIndices queueIndices, VkSwapchainKHR oldSwapchain );
 		void createImages( VkDevice device );
 		void createFrameBuffers();
-
-		static VkSurfaceCapabilitiesKHR getSurfaceCapabilities( VkPhysicalDevice device, VkSurfaceKHR surface );
-		static VkExtent2D getExtent( uint32_t width, uint32_t height, VkSurfaceCapabilitiesKHR& capabilities );
-		static VkSurfaceFormatKHR getSurfaceFormat( VkPhysicalDevice physicalDevice, VkSurfaceKHR surface );
-		static VkPresentModeKHR getPresentMode( VkPhysicalDevice physicalDevice, VkSurfaceKHR surface );
 	};
 }

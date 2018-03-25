@@ -3,7 +3,7 @@
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 
-#include "util.hpp"
+#include "util/Util.hpp"
 
 #include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp>
@@ -26,7 +26,7 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
 	const char* msg,
 	void* userData ) {
 
-	errln( "validation layer: " , msg );
+	Util::errln( "validation layer: " , msg );
 
 	return VK_FALSE;
 }
@@ -244,22 +244,6 @@ void VulkanWindow::findQFamilyIndexes()
 
 		i++;
 	}
-}
-
-uint32_t VulkanWindow::findMemoryType( uint32_t typeFilter, VkMemoryPropertyFlags properties )
-{
-	VkPhysicalDeviceMemoryProperties memProps;
-	vkGetPhysicalDeviceMemoryProperties( physicalDevice, &memProps );
-
-	for (uint32_t i = 0; i < memProps.memoryTypeCount; i++)
-	{
-		if (typeFilter & (1 << i) && (memProps.memoryTypes[i].propertyFlags & properties) == properties)
-		{
-			return i;
-		}
-	}
-
-	throw runtime_error( "suitable memory type not found" );
 }
 
 void VulkanWindow::recreateSwapchain()

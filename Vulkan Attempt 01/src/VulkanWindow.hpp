@@ -11,7 +11,7 @@
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "util.hpp"
+#include "util/Util.hpp"
 #include "Vertex.hpp"
 #include "UniformBufferObject.hpp"
 #include "QueueIndices.hpp"
@@ -102,7 +102,6 @@ namespace com::gelunox::vulcanUtils
 		void selectPhysicalDevice();
 		void createLogicalDevice();
 		void findQFamilyIndexes();
-		uint32_t findMemoryType( uint32_t typeFilter, VkMemoryPropertyFlags properties );
 
 		void recreateSwapchain();
 

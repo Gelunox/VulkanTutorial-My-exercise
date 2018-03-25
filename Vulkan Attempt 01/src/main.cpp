@@ -6,10 +6,16 @@ using namespace com::gelunox::vulcanUtils;
 
 int main()
 {
-	{
-		VulkanWindow window;
+	try {
+		{
+			VulkanWindow window;
 
-		window.run();
+			window.run();
+		}
+	}
+	catch (runtime_error e)
+	{
+		std::cerr << e.what() << std::endl;
 	}
 
 	std::cout << "Press enter to continue...";

@@ -3,7 +3,7 @@
 #include <vulkan/vulkan.h>
 #include <vector>
 
-#include "util.hpp"
+#include "util/Util.hpp"
 #include "Vertex.hpp"
 #include "builder/RenderPassBuilder.hpp"
 #include "builder/PipelineBuilder.hpp"

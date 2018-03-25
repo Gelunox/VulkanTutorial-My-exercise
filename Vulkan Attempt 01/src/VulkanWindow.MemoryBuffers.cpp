@@ -64,7 +64,7 @@ void VulkanWindow::createBuffer( VkDeviceSize size, VkBufferUsageFlags usage, Vk
 	VkMemoryAllocateInfo allocInfo = {};
 	allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 	allocInfo.allocationSize = memReq.size;
-	allocInfo.memoryTypeIndex = findMemoryType( memReq.memoryTypeBits, property );
+	allocInfo.memoryTypeIndex = Util::findMemoryType( physicalDevice, memReq.memoryTypeBits, property );
 
 	if (vkAllocateMemory( logicalDevice, &allocInfo, nullptr, &memory ) != VK_SUCCESS)
 	{

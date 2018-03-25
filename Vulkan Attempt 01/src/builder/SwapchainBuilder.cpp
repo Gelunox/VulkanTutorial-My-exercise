@@ -49,7 +49,7 @@ This SwapchainBuilder::addQueueFamily( uint32_t& index )
 	return *this;
 }
 
-This SwapchainBuilder::addQueueFamily( vector<uint32_t>& indices )
+This SwapchainBuilder::addQueueFamilies( vector<uint32_t>& indices )
 {
 	for(uint32_t index: indices)
 		queueFamilyIndices.insert( index );

@@ -26,7 +26,7 @@ namespace com::gelunox::vulcanUtils
 		This setSurfaceFormat( VkSurfaceFormatKHR& format );
 		This setImageExtent( VkExtent2D& extent );
 		This addQueueFamily( uint32_t& index );
-		This addQueueFamily( vector<uint32_t>& indices );
+		This addQueueFamilies( vector<uint32_t>& indices );
 		This setSurfaceCapabilities( VkSurfaceCapabilitiesKHR& capabilities );
 		This setPresentMode( VkPresentModeKHR& presentMode );
 		This setOldSwapchain( VkSwapchainKHR & old );

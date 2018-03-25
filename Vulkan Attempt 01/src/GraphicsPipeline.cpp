@@ -27,8 +27,8 @@ void GraphicsPipeline::createRenderpass( VkFormat imageFormat )
 void GraphicsPipeline::createPipeline( VkExtent2D imageExtent, VkDescriptorSetLayout descriptorLayout )
 {
 	//shaders
-	vector<char> vertShader = readFile( "shaders/vert.spv" );
-	vector<char> fragShader = readFile( "shaders/frag.spv" );
+	vector<char> vertShader = Util::readFile( "shaders/vert.spv" );
+	vector<char> fragShader = Util::readFile( "shaders/frag.spv" );
 
 	layout = PipelineLayoutBuilder( device )
 		.addDescriptorSetLayout( descriptorLayout )

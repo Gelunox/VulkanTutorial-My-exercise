@@ -47,10 +47,10 @@ Swapchain::~Swapchain()
 
 void Swapchain::createSwapchain( VkPhysicalDevice physicalDevice, VkDevice device, VkSurfaceKHR surface, QueueIndices queueIndices, VkSwapchainKHR oldSwapchain )
 {
-	VkSurfaceCapabilitiesKHR capabilities = getSurfaceCapabilities( physicalDevice, surface );
-	extent = getExtent( width, height, capabilities );
-	VkPresentModeKHR presentMode = getPresentMode(physicalDevice, surface);
-	VkSurfaceFormatKHR surfaceFormat = getSurfaceFormat( physicalDevice, surface);
+	VkSurfaceCapabilitiesKHR capabilities = Util::getSurfaceCapabilities( physicalDevice, surface );
+	extent = Util::getExtent( width, height, capabilities );
+	VkPresentModeKHR presentMode = Util::getPresentMode(physicalDevice, surface);
+	VkSurfaceFormatKHR surfaceFormat = Util::getSurfaceFormat( physicalDevice, surface);
 	imageFormat = surfaceFormat.format;
 
 	uint32_t imageCount = capabilities.minImageCount + 1;
@@ -65,7 +65,7 @@ void Swapchain::createSwapchain( VkPhysicalDevice physicalDevice, VkDevice devic
 		.setMinImageCount( imageCount )
 		.setSurfaceFormat( surfaceFormat )
 		.setImageExtent( extent )
-		.addQueueFamily( queueIndices.asList() )
+		.addQueueFamilies( queueIndices.asList() )
 		.setSurfaceCapabilities( capabilities )
 		.setPresentMode( presentMode )
 		.setOldSwapchain( oldSwapchain )
@@ -104,86 +104,4 @@ void Swapchain::createFrameBuffers()
 			.setExtent( extent )
 			.build();
 	}
-}
-
-VkSurfaceCapabilitiesKHR Swapchain::getSurfaceCapabilities( VkPhysicalDevice device, VkSurfaceKHR surface )
-{
-	VkSurfaceCapabilitiesKHR capabilities;
-
-	vkGetPhysicalDeviceSurfaceCapabilitiesKHR( device, surface, &capabilities );
-
-	return capabilities;
-}
-
-VkExtent2D Swapchain::getExtent( uint32_t width, uint32_t height, VkSurfaceCapabilitiesKHR & capabilities )
-{
-	if (capabilities.currentExtent.width != numeric_limits<uint32_t>::max())
-	{
-		return capabilities.currentExtent;
-	}
-
-	VkExtent2D extend = { width, height };
-	extend.width = std::max( capabilities.minImageExtent.width, std::min( capabilities.maxImageExtent.width, extend.width ) );
-	extend.height = std::max( capabilities.minImageExtent.height, std::min( capabilities.maxImageExtent.height, extend.height ) );
-
-	return extend;
-}
-
-VkSurfaceFormatKHR Swapchain::getSurfaceFormat( VkPhysicalDevice physicalDevice, VkSurfaceKHR surface )
-{
-	uint32_t formatCount;
-	vector<VkSurfaceFormatKHR> formats;
-
-	vkGetPhysicalDeviceSurfaceFormatsKHR( physicalDevice, surface, &formatCount, nullptr );
-
-	if (formatCount)
-	{
-		formats.resize( formatCount );
-		vkGetPhysicalDeviceSurfaceFormatsKHR( physicalDevice, surface, &formatCount, formats.data() );
-	}
-
-	if (formats.size() == 1 && formats[0].format == VK_FORMAT_UNDEFINED)
-	{
-		return { VK_FORMAT_B8G8R8A8_UNORM, VK_COLOR_SPACE_SRGB_NONLINEAR_KHR };
-	}
-
-	for (VkSurfaceFormatKHR format : formats)
-	{
-		if (format.format == VK_FORMAT_B8G8R8A8_UNORM && format.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
-		{
-			return format;
-		}
-	}
-
-	return formats[0];
-}
-
-VkPresentModeKHR Swapchain::getPresentMode( VkPhysicalDevice physicalDevice, VkSurfaceKHR surface )
-{
-	uint32_t modeCount;
-	vkGetPhysicalDeviceSurfacePresentModesKHR( physicalDevice, surface, &modeCount, nullptr );
-
-	vector<VkPresentModeKHR> modes;
-
-	if (modeCount)
-	{
-		modes.resize( modeCount );
-		vkGetPhysicalDeviceSurfacePresentModesKHR( physicalDevice, surface, &modeCount, modes.data() );
-	}
-
-	VkPresentModeKHR mode = VK_PRESENT_MODE_FIFO_KHR;
-
-	for (VkPresentModeKHR presentMode : modes)
-	{
-		if (presentMode == VK_PRESENT_MODE_MAILBOX_KHR)
-		{
-			return presentMode;
-		}
-		if (presentMode == VK_PRESENT_MODE_IMMEDIATE_KHR)
-		{
-			mode = presentMode;
-		}
-	}
-
-	return mode;
 }

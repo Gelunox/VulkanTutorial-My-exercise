@@ -25,9 +25,9 @@ void VulkanWindow::selectPhysicalDevice()
 		VkPhysicalDeviceProperties deviceProps;
 		vkGetPhysicalDeviceProperties( device, &deviceProps );
 
-		println( deviceProps.deviceName );
+		Util::println( deviceProps.deviceName );
 	}
-	println( "" );
+	Util::println( "" );
 
 	physicalDevice = VK_NULL_HANDLE;
 
