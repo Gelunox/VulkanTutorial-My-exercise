@@ -14,4 +14,5 @@ void VulkanWindow::createBuffers()
 		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
 		uniformBuffer, uniformMemory );
 
+	memFac.createTextureImage( "textures/chibi.png", textureImage, textureImageMemory );
 }

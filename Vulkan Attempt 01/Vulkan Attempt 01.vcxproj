@@ -70,7 +70,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>E:\C Libs\VulkanSDK\1.0.65.1\Include;E:\C Libs\glfw-3.2.1\include;E:\C Libs\glm;$(IncludePath)</IncludePath>
+    <IncludePath>E:\C Libs\VulkanSDK\1.0.65.1\Include;E:\C Libs\glfw-3.2.1\include;E:\C Libs\glm;E:\C Libs\stb;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -118,6 +118,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\builder\MemoryFactory.cpp" />
     <ClCompile Include="src\builder\InstanceBuilder.cpp" />
     <ClCompile Include="src\builder\LogicalDeviceBuilder.cpp" />
     <ClCompile Include="src\builder\FramebufferBuilder.cpp" />
@@ -139,6 +140,7 @@
     <None Include="shaders\shader.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\builder\MemoryFactory.hpp" />
     <ClInclude Include="src\builder\InstanceBuilder.hpp" />
     <ClInclude Include="src\builder\LogicalDeviceBuilder.hpp" />
     <ClInclude Include="src\builder\FramebufferBuilder.hpp" />
@@ -154,6 +156,9 @@
     <ClInclude Include="src\Vertex.hpp" />
     <ClInclude Include="src\VulkanWindow.hpp" />
     <ClInclude Include="src\builder\SwapchainBuilder.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="textures\chibi.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
