@@ -18,6 +18,8 @@ void VulkanWindow::createCommandpool()
 	{
 		throw runtime_error( "commandpool creation failed" );
 	}
+
+	memFac.setCommandPool( commandpool );
 }
 
 void VulkanWindow::createCommandbuffers()

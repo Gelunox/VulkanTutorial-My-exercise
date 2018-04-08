@@ -60,6 +60,9 @@
     <ClCompile Include="src\builder\InstanceBuilder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\builder\MemoryFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\shader.frag" />
@@ -111,5 +114,9 @@
     <ClInclude Include="src\util\Globals.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\builder\MemoryFactory.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
   </ItemGroup>
 </Project>

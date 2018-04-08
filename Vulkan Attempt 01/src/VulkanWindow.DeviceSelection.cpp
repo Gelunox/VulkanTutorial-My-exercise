@@ -45,6 +45,7 @@ void VulkanWindow::selectPhysicalDevice()
 	{
 		throw runtime_error( "No suitable gpu was found" );
 	}
+	memFac.setPhysicalDevice( physicalDevice );
 }
 
 void VulkanWindow::createLogicalDevice()
@@ -73,4 +74,7 @@ void VulkanWindow::createLogicalDevice()
 	//retrieve queue handle
 	vkGetDeviceQueue( logicalDevice, queueIndices.graphics, 0, &graphicsQ );
 	vkGetDeviceQueue( logicalDevice, queueIndices.presentation, 0, &presentQ );
+
+	memFac.setLogicalDevice( logicalDevice );
+	memFac.setBufferCopyQueue( graphicsQ );
 }

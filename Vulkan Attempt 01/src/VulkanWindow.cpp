@@ -77,7 +77,6 @@ bool VulkanWindow::isSuitableGpu( VkPhysicalDevice device )
 //https://vulkan-tutorial.com/Drawing_a_triangle/Setup/Instance
 VulkanWindow::VulkanWindow()
 {
-
 	//GLFW init
 	glfwInit();
 
@@ -131,7 +130,6 @@ VulkanWindow::VulkanWindow()
 
 	createDescriptorPool();
 	createDescriptorSet();
-	createCommandpool();
 
 	createCommandbuffers();
 	createSemaphores();
@@ -157,6 +155,9 @@ VulkanWindow::~VulkanWindow()
 
 	vkDestroyBuffer( logicalDevice, uniformBuffer, nullptr );
 	vkFreeMemory( logicalDevice, uniformMemory, nullptr );
+
+	vkDestroyImage( logicalDevice, textureImage, nullptr );
+	vkFreeMemory( logicalDevice, textureImageMemory, nullptr );
 
 	vkDestroyCommandPool( logicalDevice, commandpool, nullptr );
 

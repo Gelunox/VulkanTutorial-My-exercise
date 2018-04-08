@@ -19,6 +19,7 @@
 
 #include "builder/InstanceBuilder.hpp"
 #include "builder/LogicalDeviceBuilder.hpp"
+#include "builder/MemoryFactory.hpp"
 
 using namespace std;
 
@@ -60,6 +61,8 @@ namespace com::gelunox::vulcanUtils
 		VkDeviceMemory indexMemory;
 		VkBuffer uniformBuffer;
 		VkDeviceMemory uniformMemory;
+		VkImage textureImage;
+		VkDeviceMemory textureImageMemory;
 
 		VkDescriptorPool descriptorPool;
 		VkDescriptorSetLayout descriptorSetLayout;
@@ -71,6 +74,7 @@ namespace com::gelunox::vulcanUtils
 		VkSemaphore renderFinishedSemaphore;
 
 		QueueIndices queueIndices;
+		MemoryFactory memFac;
 
 		const vector<Vertex> vertices =
 		{
@@ -106,9 +110,6 @@ namespace com::gelunox::vulcanUtils
 		void createCommandpool();
 
 		void createBuffers();
-		void createMemory( VkDeviceSize size, const void * srcData, VkBuffer& dstBuffer, VkDeviceMemory& dstMemory, VkBufferUsageFlagBits flags );
-		void createBuffer( VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags property, VkBuffer &buffer, VkDeviceMemory &memory );
-		void copyBuffer( VkBuffer src, VkBuffer dst, VkDeviceSize size );
 
 		void createDescriptorSetLayout();
 		void createDescriptorPool();
