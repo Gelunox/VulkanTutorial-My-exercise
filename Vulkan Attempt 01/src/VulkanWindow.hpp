@@ -22,6 +22,8 @@
 #include "builder/MemoryFactory.hpp"
 #include "builder/ImageViewBuilder.hpp"
 #include "builder/SamplerBuilder.hpp"
+#include "builder/DescriptorSetLayoutBuilder.hpp"
+#include "builder/DescriptorPoolBuilder.hpp"
 
 using namespace std;
 
@@ -83,10 +85,10 @@ namespace com::gelunox::vulcanUtils
 
 		const vector<Vertex> vertices =
 		{
-			{ { -0.8f, -0.8f },{ 1.0f, 0.0f, 0.0f } },
-			{ {  0.8f, -0.8f },{ 0.0f, 1.0f, 0.0f } },
-			{ {  0.8f,  0.8f },{ 0.0f, 0.0f, 1.0f } },
-			{ { -0.8f,  0.8f },{ 0.5f, 0.0f, 0.5f } }
+			{ { -0.8f, -0.8f }, { 1.0f, 0.0f, 0.0f }, { 1.0f, 0.0f } },
+			{ {  0.8f, -0.8f }, { 0.0f, 1.0f, 0.0f }, { 0.0f, 0.0f } },
+			{ {  0.8f,  0.8f }, { 0.0f, 0.0f, 1.0f }, { 0.0f, 1.0f } },
+			{ { -0.8f,  0.8f }, { 0.5f, 0.0f, 0.5f }, { 1.0f, 1.0f } }
 		};
 		const vector<uint16_t> indices =
 		{

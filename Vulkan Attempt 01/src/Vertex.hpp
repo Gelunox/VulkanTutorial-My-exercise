@@ -13,6 +13,7 @@ namespace com::gelunox::vulcanUtils
 	{
 		vec2 position;
 		vec3 color;
+		vec2 texCoord;
 
 		static VkVertexInputBindingDescription getBindDescription()
 		{
@@ -24,9 +25,9 @@ namespace com::gelunox::vulcanUtils
 			return bindDescription;
 		}
 
-		static array<VkVertexInputAttributeDescription, 2> getAttributeDescriptions()
+		static array<VkVertexInputAttributeDescription, 3> getAttributeDescriptions()
 		{
-			array<VkVertexInputAttributeDescription, 2> attributeDescriptions = {};
+			array<VkVertexInputAttributeDescription, 3> attributeDescriptions = {};
 			attributeDescriptions[0].binding = 0;
 			attributeDescriptions[0].location = 0;
 			attributeDescriptions[0].format = VK_FORMAT_R32G32_SFLOAT;
@@ -36,6 +37,11 @@ namespace com::gelunox::vulcanUtils
 			attributeDescriptions[1].location = 1;
 			attributeDescriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT;
 			attributeDescriptions[1].offset = offsetof( Vertex, color );
+
+			attributeDescriptions[2].binding = 0;
+			attributeDescriptions[2].location = 2;
+			attributeDescriptions[2].format = VK_FORMAT_R32G32_SFLOAT;
+			attributeDescriptions[2].offset = offsetof( Vertex, texCoord );
 
 			return attributeDescriptions;
 		}

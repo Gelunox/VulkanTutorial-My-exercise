@@ -16,7 +16,7 @@ namespace com::gelunox::vulcanUtils
 
 	private:
 		VkVertexInputBindingDescription bindDescription = Vertex::getBindDescription();
-		array<VkVertexInputAttributeDescription, 2> attributeDescriptions = Vertex::getAttributeDescriptions();
+		array<VkVertexInputAttributeDescription, 3> attributeDescriptions = Vertex::getAttributeDescriptions();
 		
 		VkPipelineVertexInputStateCreateInfo vertexInputInfo = {};
 		VkPipelineInputAssemblyStateCreateInfo inputAssInfo = {};

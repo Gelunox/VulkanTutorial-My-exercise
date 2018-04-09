@@ -17,7 +17,7 @@ SamplerBuilder::SamplerBuilder(VkDevice& device): device(device)
 	samplerInfo.anisotropyEnable = VK_TRUE;
 	samplerInfo.maxAnisotropy = 16;
 
-	samplerInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
+	samplerInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_WHITE;
 	samplerInfo.unnormalizedCoordinates = VK_FALSE; // 0 to 1 vs 0 to texture-length
 
 	samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;

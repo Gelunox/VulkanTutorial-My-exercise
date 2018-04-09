@@ -77,43 +77,23 @@ void VulkanWindow::createCommandbuffers()
 	}
 }
 
-//https://vulkan-tutorial.com/Uniform_buffers/Descriptor_layout_and_buffer
+//TODO: look into a descriptor builder/factory
+//descriptorType is repeated 3 times, correlation between layout, pool, and write
+//need to account for creation order? descriptorSetLayout is needed when creating the swapchain (or earlier than the other parts at least)
 void VulkanWindow::createDescriptorSetLayout()
 {
-	VkDescriptorSetLayoutBinding uboLayoutBinding = {};
-	uboLayoutBinding.binding = 0;
-	uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	uboLayoutBinding.descriptorCount = 1;
-	uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-	uboLayoutBinding.pImmutableSamplers = nullptr;
-
-	VkDescriptorSetLayoutCreateInfo layoutInfo = {};
-	layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-	layoutInfo.bindingCount = 1;
-	layoutInfo.pBindings = &uboLayoutBinding;
-
-	if (vkCreateDescriptorSetLayout( logicalDevice, &layoutInfo, nullptr, &descriptorSetLayout ) != VK_SUCCESS)
-	{
-		throw runtime_error( "Failed to create descriptorset layout" );
-	}
+	descriptorSetLayout = DescriptorSetLayoutBuilder( logicalDevice )
+		.addBinding( 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1, VK_SHADER_STAGE_VERTEX_BIT, nullptr )
+		.addBinding( 1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1, VK_SHADER_STAGE_FRAGMENT_BIT, nullptr )
+		.build();
 }
 
 void VulkanWindow::createDescriptorPool()
 {
-	VkDescriptorPoolSize poolSize = {};
-	poolSize.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	poolSize.descriptorCount = 1;
-
-	VkDescriptorPoolCreateInfo poolInfo = {};
-	poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-	poolInfo.poolSizeCount = 1;
-	poolInfo.pPoolSizes = &poolSize;
-	poolInfo.maxSets = 1;
-
-	if (vkCreateDescriptorPool( logicalDevice, &poolInfo, nullptr, &descriptorPool ) != VK_SUCCESS)
-	{
-		throw runtime_error( "Descriptorpool creation failed" );
-	}
+	descriptorPool = DescriptorPoolBuilder( logicalDevice )
+		.addPoolSize( VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1 )
+		.addPoolSize( VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1 )
+		.build();
 }
 
 void VulkanWindow::createDescriptorSet()
@@ -130,23 +110,35 @@ void VulkanWindow::createDescriptorSet()
 		throw runtime_error( "couldn't create descriptorset" );
 	}
 
+	VkWriteDescriptorSet descriptorWrites[2] = { {},{} };
+
 	VkDescriptorBufferInfo bufferInfo = {};
 	bufferInfo.buffer = uniformBuffer;
 	bufferInfo.offset = 0;
 	bufferInfo.range = sizeof( UniformBufferObject );
 
-	VkWriteDescriptorSet descriptorWrite = {};
-	descriptorWrite.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-	descriptorWrite.dstSet = descriptorSet;
-	descriptorWrite.dstBinding = 0;
-	descriptorWrite.dstArrayElement = 0;
-	descriptorWrite.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	descriptorWrite.descriptorCount = 1;
-	descriptorWrite.pBufferInfo = &bufferInfo;
-	descriptorWrite.pImageInfo = nullptr;
-	descriptorWrite.pTexelBufferView = nullptr;
+	descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+	descriptorWrites[0].dstSet = descriptorSet;
+	descriptorWrites[0].dstBinding = 0;
+	descriptorWrites[0].dstArrayElement = 0;
+	descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+	descriptorWrites[0].descriptorCount = 1;
+	descriptorWrites[0].pBufferInfo = &bufferInfo;
+
+	VkDescriptorImageInfo imageInfo = {};
+	imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+	imageInfo.imageView = textureImageView;
+	imageInfo.sampler = textureSampler;
+
+	descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+	descriptorWrites[1].dstSet = descriptorSet;
+	descriptorWrites[1].dstBinding = 1;
+	descriptorWrites[1].dstArrayElement = 0;
+	descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+	descriptorWrites[1].descriptorCount = 1;
+	descriptorWrites[1].pImageInfo = &imageInfo;
 	
-	vkUpdateDescriptorSets( logicalDevice, 1, &descriptorWrite, 0, nullptr );
+	vkUpdateDescriptorSets( logicalDevice, 2, descriptorWrites, 0, nullptr );
 }
 
 void VulkanWindow::createSemaphores()
@@ -166,7 +158,7 @@ void VulkanWindow::update()
 {
 	timepoint now = chrono::high_resolution_clock::now();
 
-	float time = chrono::duration<float, chrono::seconds::period>( now - startTime ).count() *3;
+	float time = chrono::duration<float, chrono::seconds::period>( now - startTime ).count() ;
 
 	UniformBufferObject ubo = {};
 	ubo.model = glm::rotate( glm::mat4( 1.0f ), time * glm::radians( 90.0f ), glm::vec3( 0.0f, 0.0f, 1.0f ) );
