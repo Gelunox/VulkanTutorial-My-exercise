@@ -21,7 +21,7 @@ namespace com::gelunox::vulcanUtils
 		ImageViewBuilder( VkDevice& device );
 
 		This setImage( VkImage& image );
-		This setFormat( VkFormat& format );
+		This setFormat( VkFormat format );
 
 		VkImageView build();
 	};

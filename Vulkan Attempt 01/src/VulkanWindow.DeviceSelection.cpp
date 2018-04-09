@@ -53,6 +53,7 @@ void VulkanWindow::createLogicalDevice()
 	//Logical device creation
 	LogicalDeviceBuilder builder = LogicalDeviceBuilder( physicalDevice )
 		.addExtensions( deviceExtensions )
+		.setFeatureSamplerAnisotrophy( VK_TRUE )
 		.setValidationLayersEnabled(enableValidationLayers);
 
 	float queuePriority = 1.0f;

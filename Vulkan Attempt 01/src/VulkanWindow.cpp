@@ -62,6 +62,8 @@ void DestroyDebugReportCallbackEXT( VkInstance instance, VkDebugReportCallbackEX
 
 bool VulkanWindow::isSuitableGpu( VkPhysicalDevice device )
 {
+	//TODO: improve this function with things from create logical device, etc
+	// maybe even combine inside some kind of factory/builder class?
 	VkPhysicalDeviceProperties deviceProps;
 	VkPhysicalDeviceFeatures deviceFeatures;
 
@@ -127,6 +129,7 @@ VulkanWindow::VulkanWindow()
 
 	createCommandpool();
 	createBuffers();
+	createImage();
 
 	createDescriptorPool();
 	createDescriptorSet();
@@ -155,9 +158,11 @@ VulkanWindow::~VulkanWindow()
 
 	vkDestroyBuffer( logicalDevice, uniformBuffer, nullptr );
 	vkFreeMemory( logicalDevice, uniformMemory, nullptr );
-
+	
+	vkDestroyImageView( logicalDevice, textureImageView, nullptr );
 	vkDestroyImage( logicalDevice, textureImage, nullptr );
 	vkFreeMemory( logicalDevice, textureImageMemory, nullptr );
+	vkDestroySampler( logicalDevice, textureSampler, nullptr );
 
 	vkDestroyCommandPool( logicalDevice, commandpool, nullptr );
 
@@ -203,6 +208,7 @@ void VulkanWindow::onWindowResized( GLFWwindow * window, int width, int height )
 //retrieve graphics query and presentation query
 void VulkanWindow::findQFamilyIndexes()
 {
+	//TODO: explicit separate queues for different things?
 	uint32_t queueFamilyCount = 0;
 	vkGetPhysicalDeviceQueueFamilyProperties( physicalDevice, &queueFamilyCount, nullptr );
 
@@ -242,4 +248,16 @@ void VulkanWindow::recreateSwapchain()
 	vkFreeCommandBuffers( logicalDevice, commandpool, static_cast<uint32_t>(commandBuffers.size()), commandBuffers.data() );
 	createCommandbuffers();
 	delete old;
+}
+
+void VulkanWindow::createBuffers()
+{
+	memFac.createBufferMemory( sizeof( vertices[0] ) * vertices.size(), vertices.data(), vertexBuffer, vertexMemory, VK_BUFFER_USAGE_VERTEX_BUFFER_BIT );
+	memFac.createBufferMemory( sizeof( indices[0] ) *  indices.size(), indices.data(), indexBuffer, indexMemory, VK_BUFFER_USAGE_INDEX_BUFFER_BIT );
+
+	//uniformbuffer
+	memFac.createBuffer( sizeof( UniformBufferObject ),
+		VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+		VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+		uniformBuffer, uniformMemory );
 }

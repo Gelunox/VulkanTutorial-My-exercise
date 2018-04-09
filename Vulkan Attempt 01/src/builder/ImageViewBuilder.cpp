@@ -26,7 +26,7 @@ This ImageViewBuilder::setImage( VkImage & image )
 	return *this;
 }
 
-This ImageViewBuilder::setFormat( VkFormat & format )
+This ImageViewBuilder::setFormat( VkFormat format )
 {
 	createInfo.format = format;
 

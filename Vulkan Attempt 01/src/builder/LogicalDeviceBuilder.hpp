@@ -29,6 +29,7 @@ namespace com::gelunox::vulcanUtils
 		This addExtension( const char * extension );
 		This addExtensions( vector<const char*> extensions );
 		This setValidationLayersEnabled( bool enabled );
+		This setFeatureSamplerAnisotrophy( VkBool32 enabled );
 
 		VkDevice build();
 	};

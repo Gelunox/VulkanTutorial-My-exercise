@@ -118,6 +118,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\builder\SamplerBuilder.cpp" />
     <ClCompile Include="src\builder\MemoryFactory.cpp" />
     <ClCompile Include="src\builder\InstanceBuilder.cpp" />
     <ClCompile Include="src\builder\LogicalDeviceBuilder.cpp" />
@@ -129,7 +130,7 @@
     <ClCompile Include="src\builder\PipelineBuilder.cpp" />
     <ClCompile Include="src\Swapchain.cpp" />
     <ClCompile Include="src\util\Util.cpp" />
-    <ClCompile Include="src\VulkanWindow.MemoryBuffers.cpp" />
+    <ClCompile Include="src\VulkanWindow.Images.cpp" />
     <ClCompile Include="src\VulkanWindow.cpp" />
     <ClCompile Include="src\VulkanWindow.DeviceSelection.cpp" />
     <ClCompile Include="src\VulkanWindow.Drawing.cpp" />
@@ -140,6 +141,7 @@
     <None Include="shaders\shader.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\builder\SamplerBuilder.hpp" />
     <ClInclude Include="src\builder\MemoryFactory.hpp" />
     <ClInclude Include="src\builder\InstanceBuilder.hpp" />
     <ClInclude Include="src\builder\LogicalDeviceBuilder.hpp" />

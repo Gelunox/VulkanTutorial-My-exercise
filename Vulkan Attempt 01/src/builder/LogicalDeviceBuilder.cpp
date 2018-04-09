@@ -47,6 +47,13 @@ This LogicalDeviceBuilder::setValidationLayersEnabled( bool enabled )
 	return *this;
 }
 
+This LogicalDeviceBuilder::setFeatureSamplerAnisotrophy(VkBool32 enabled)
+{
+	deviceFeatures.samplerAnisotropy = enabled;
+
+	return *this;
+}
+
 VkDevice LogicalDeviceBuilder::build()
 {
 	//Queue createInfos

@@ -20,6 +20,8 @@
 #include "builder/InstanceBuilder.hpp"
 #include "builder/LogicalDeviceBuilder.hpp"
 #include "builder/MemoryFactory.hpp"
+#include "builder/ImageViewBuilder.hpp"
+#include "builder/SamplerBuilder.hpp"
 
 using namespace std;
 
@@ -61,8 +63,11 @@ namespace com::gelunox::vulcanUtils
 		VkDeviceMemory indexMemory;
 		VkBuffer uniformBuffer;
 		VkDeviceMemory uniformMemory;
+
 		VkImage textureImage;
 		VkDeviceMemory textureImageMemory;
+		VkImageView textureImageView;
+		VkSampler textureSampler;
 
 		VkDescriptorPool descriptorPool;
 		VkDescriptorSetLayout descriptorSetLayout;
@@ -110,6 +115,7 @@ namespace com::gelunox::vulcanUtils
 		void createCommandpool();
 
 		void createBuffers();
+		void createImage();
 
 		void createDescriptorSetLayout();
 		void createDescriptorPool();
